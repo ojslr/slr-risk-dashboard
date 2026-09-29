@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLR Risk Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style id="vcss">
+body{margin:0;background:#F6F6F2;color:#1E1E1E;font:15px/1.5 Figtree,"Segoe UI",Arial,sans-serif}
+#viewer header{background:linear-gradient(135deg,#1B241B,#3C533C);color:#F6F6F2;padding:22px 28px}
+#viewer h1{margin:0;font-size:22px}
+#viewer header p{margin:4px 0 0;opacity:.8;font-size:14px}
+#viewer main{max-width:860px;margin:24px auto;padding:0 20px}
+.card{background:#fff;border:1px solid #DCDACD;border-radius:10px;padding:20px 22px;margin-bottom:16px}
+.card h2{margin:0 0 6px;font-size:16px}
+.card p{margin:0 0 12px;color:#565D4F;font-size:14px}
+textarea{width:100%;box-sizing:border-box;min-height:220px;padding:10px;border:1px solid #DCDACD;border-radius:8px;font:12.5px/1.4 Consolas,Menlo,monospace}
+.go{margin-top:12px;padding:9px 18px;border-radius:8px;border:0;background:#D6F591;color:#263326;font:inherit;font-weight:700;cursor:pointer}
+.go:hover{background:#E4FAB3}
+.err{color:#A73434;font-weight:600;margin-top:10px}
+.small{font-size:13px;color:#565D4F}
+</style>
+</head>
+<body>
+<div id="viewer">
+<header><h1>SLR Risk Dashboard</h1><p>Open a risk register from the Risk Assessment agent.</p></header>
+<main>
+<div class="card">
+<h2>Paste from the agent</h2>
+<p>Click copy on the agent's code block, paste it here, then click Open dashboard.</p>
+<textarea id="vText" spellcheck="false" placeholder="Paste the whole code block here"></textarea>
+<button class="go" id="vGo" type="button">Open dashboard</button>
+</div>
+<div class="card">
+<h2>Or open a file</h2>
+<p>Use this for a .txt file from the agent or a dashboard someone shared with you.</p>
+<input type="file" id="vFile" accept=".html,.htm,.txt,.json">
+</div>
+<p class="err" id="vErr" role="alert"></p>
+<p class="small">Your project data stays in your browser. Nothing is uploaded. Once the dashboard opens, click Save copy to download it as an .html file to keep and share.</p>
+</main>
+</div>
+<script>
+(function(){
+if(!document.getElementById("viewer"))return;
+var SCRIPT="https://ojslr.github.io/slr-risk-dashboard/risk-dashboard.js";
+var err=document.getElementById("vErr");
+function extract(text){
+var t=String(text||"").replace(/`{3}[a-zA-Z]*/g,"").trim();
+if(!t)throw new Error("Nothing to open. Paste the agent's code block first.");
+var m=t.match(/id=["']risk-data["'][^>]*>([\s\S]*?)<\/script>/i);
+var body=m?m[1].trim():t.slice(t.indexOf("{"),t.lastIndexOf("}")+1);
+if(!body||body.charAt(0)!=="{")throw new Error("No risk data found. Copy the whole code block from the agent.");
+var d;
+try{d=JSON.parse(body);}catch(e){try{d=JSON.parse(body.replace(/,\s*([}\]])/g,"$1"));}catch(e2){throw new Error("The data isn't complete ("+e.message+"). The code block may be cut off. Ask the agent to re-issue the dashboard.");}}
+if(!d||!(Array.isArray(d.risks)||(d.assessments&&typeof d.assessments==="object")))throw new Error("That doesn't look like a risk register from the agent.");
+return JSON.stringify(d).replace(/<\//g,"<\\/");
+}
+function open(json){
+document.getElementById("viewer").remove();
+var css=document.getElementById("vcss");if(css)css.remove();
+var d=document.createElement("script");d.type="application/json";d.id="risk-data";d.textContent=json;document.body.appendChild(d);
+var s=document.createElement("script");s.src=SCRIPT;
+s.onerror=function(){document.body.insertAdjacentHTML("afterbegin",'<p style="margin:24px;font:16px Arial;color:#A73434">Could not load the dashboard. Check your internet connection and refresh the page.</p>');};
+document.body.appendChild(s);
+}
+function tryOpen(text){err.textContent="";try{open(extract(text));}catch(e){err.textContent=e.message;}}
+document.getElementById("vGo").onclick=function(){tryOpen(document.getElementById("vText").value);};
+document.getElementById("vFile").onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){tryOpen(r.result);};r.onerror=function(){err.textContent="Could not read that file.";};r.readAsText(f);};
+})();
+</script>
+</body>
+</html>
