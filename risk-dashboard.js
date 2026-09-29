@@ -1,10 +1,10 @@
-/* SLR Risk Assessment Dashboard v2 (full). Hosted build of the Generic Risk Dashboard.
+/* SLR Risk Assessment Dashboard v4 (full + SPR model + AI review). Hosted build of the Generic Risk Dashboard.
    Renders the project data embedded in the HTML file that loads it. */
 var __RD_ME = (document.currentScript && document.currentScript.src) || "";
 var __RD_SRC = document.documentElement.outerHTML;
 (function(){
-  document.head.insertAdjacentHTML("beforeend", "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap\" rel=\"stylesheet\">\n<style>\n  :root{\n    --ink:#1E1E1E; --ink-soft:#565D4F;\n    --paper:#F6F6F2; --paper-raised:#FFFFFF; --line:#DCDACD;\n    --slr-green:#3C533C; --slr-green-deep:#263326; --slr-lime:#D6F591; --slr-tint:#EEF7DB;\n    --low:#5C8A5C; --low-bg:#E4EDE0;\n    --med:#C99A2E; --med-bg:#F6E9C9;\n    --high:#C4652B; --high-bg:#F5DDC8;\n    --extreme:#A73434; --extreme-bg:#F2D4D2;\n    --font-body:\"Figtree\",\"Segoe UI\",\"Helvetica Neue\",Arial,sans-serif;\n    --font-display:\"Playfair Display\",Georgia,serif;\n    --shadow:0 1px 2px rgba(28,27,24,0.06), 0 4px 14px rgba(28,27,24,0.06);\n  }\n  *{box-sizing:border-box;}\n  html,body{margin:0;padding:0;}\n  body{background:var(--paper); color:var(--ink); font-family:var(--font-body); padding-bottom:60px;}\n  .header{background:linear-gradient(135deg,#1B241B 0%,#263326 50%,#3C533C 100%); color:#F6F6F2; padding:22px 32px;}\n  .header{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}\n  .header .btn.agent{margin-left:auto; background:var(--slr-lime); color:var(--slr-green-deep); border-color:var(--slr-lime); font-weight:600; padding:9px 16px;}\n  .header .btn.agent:hover{background:#E4FAB3; border-color:#E4FAB3;}\n  .header .btn.agent:focus-visible{outline:2px solid #fff; outline-offset:2px;}\n  .header h1{margin:0 0 4px; font-size:22px; font-weight:700;}\n  .eyebrow{font-size:12px; letter-spacing:.04em; text-transform:uppercase; opacity:.75;}\n  .scope-note{background:#FFF9E8; border-bottom:1px solid #E9DBA6; color:#6B5A1E; font-size:12.5px; padding:8px 32px;}\n  .setup-bar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:14px 32px; background:var(--paper-raised); border-bottom:1px solid var(--line);}\n  .setup-bar label{font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-right:4px;}\n  select, input[type=text]{font-family:var(--font-body); font-size:13.5px; padding:6px 8px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink);}\n  .btn{font-family:var(--font-body); font-size:13px; padding:7px 13px; border-radius:7px; border:1px solid var(--line); background:#fff; color:var(--ink); cursor:pointer;}\n  .btn:hover{border-color:var(--slr-green);}\n  .btn.primary{background:var(--slr-green); color:#fff; border-color:var(--slr-green);}\n  .btn.primary:hover{background:var(--slr-green-deep);}\n  .btn.danger{color:#A73434; border-color:#E5B9B9;}\n  .spacer{flex:1 1 auto;}\n  .panel{margin:20px 32px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); overflow:hidden;}\n  .panel-head{padding:14px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; flex-wrap:wrap;}\n  .panel-head h2{margin:0; font-size:15px;}\n  .panel-sub{font-size:12px; color:var(--ink-soft);}\n  .panel-body{padding:16px 18px;}\n  table{border-collapse:collapse; width:100%; font-size:13px;}\n  th,td{border:1px solid var(--line); padding:7px 9px; text-align:left; vertical-align:top;}\n  th{background:#F0F0E8; font-size:11.5px; text-transform:uppercase; letter-spacing:.02em; color:var(--ink-soft);}\n  td.wrap{max-width:260px; white-space:pre-wrap;}\n  .rating{display:inline-block; padding:2px 9px; border-radius:20px; font-size:12px; font-weight:600; color:#fff;}\n  .rating.Low{background:var(--low);} .rating.Medium{background:var(--med);}\n  .rating.High{background:var(--high);} .rating.Extreme{background:var(--extreme);}\n  .matrix-table td{text-align:center; cursor:pointer; font-size:12.5px; font-weight:600; color:#3a3a2f;}\n  .matrix-table td.hdr{background:#F0F0E8; cursor:default; font-weight:600; color:var(--ink-soft); font-size:11px; text-transform:uppercase;}\n  .matrix-table td.Low{background:var(--low-bg);} .matrix-table td.Medium{background:var(--med-bg);}\n  .matrix-table td.High{background:var(--high-bg);} .matrix-table td.Extreme{background:var(--extreme-bg);}\n  .matrix-table td.active-cell{outline:3px solid var(--slr-green-deep); outline-offset:-3px;}\n  .matrix-table td.gap-cell{background:#F5F5F0; color:#B0AFA0;}\n  .risk-matrix table.matrix-table{border-collapse:separate; border-spacing:6px; width:auto;}\n  .risk-matrix td{border:none; padding:0;}\n  .risk-matrix td.hdr{font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.4px; text-align:center; padding:4px; cursor:default; background:none;}\n  .risk-matrix td.axis-label-x{text-align:center; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); padding-bottom:2px;}\n  .risk-matrix td.axis-label-y{writing-mode:vertical-rl; transform:rotate(180deg); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); text-align:center; padding-right:4px;}\n  .risk-matrix td.like-label{font-size:12px; font-weight:600; text-align:right; padding-right:10px; white-space:nowrap; color:var(--ink); background:none;}\n  .risk-matrix td.rate-cell{\n    width:78px; height:60px; border-radius:8px; text-align:center; vertical-align:middle;\n    cursor:pointer; position:relative; transition:transform .12s ease, box-shadow .12s ease; border:2px solid transparent;\n  }\n  .risk-matrix td.rate-cell:hover{transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,.18);}\n  .risk-matrix td.rate-cell.active-cell{border-color:var(--slr-green); box-shadow:0 0 0 2px rgba(60,83,60,.18) inset; outline:none;}\n  .risk-matrix .rating-tag{display:block; font-size:8.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; opacity:.85;}\n  .risk-matrix .cell-count{display:block; font-size:20px; font-weight:800; font-family:var(--font-display); line-height:1.15;}\n  .risk-matrix td.rate-cell.empty-cell{opacity:.35;}\n  .risk-matrix td.rate-cell.Low{background:var(--low-bg); color:var(--low);}\n  .risk-matrix td.rate-cell.Medium{background:var(--med-bg); color:#8A6A18;}\n  .risk-matrix td.rate-cell.High{background:var(--high-bg); color:var(--high);}\n  .risk-matrix td.rate-cell.Extreme{background:var(--extreme-bg); color:var(--extreme);}\n  .empty-state{padding:40px 18px; text-align:center; color:var(--ink-soft); font-size:14px;}\n  .drawer-overlay{position:fixed; inset:0; background:rgba(20,22,17,.45); display:none; align-items:flex-start; justify-content:flex-end; z-index:50;}\n  .drawer-overlay.show{display:flex;}\n  .drawer{width:520px; max-width:94vw; height:100%; background:var(--paper-raised); overflow-y:auto; padding:22px 24px; box-shadow:-8px 0 24px rgba(0,0,0,.15);}\n  .drawer h3{margin-top:0;}\n  .field{margin-bottom:14px;}\n  .field label{display:block; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-bottom:4px;}\n  .field textarea, .field select, .field input[type=text]{width:100%; padding:8px; border:1px solid var(--line); border-radius:6px; font-family:var(--font-body); font-size:13.5px;}\n  .field textarea{min-height:64px; resize:vertical;}\n  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:10px;}\n  .rating-preview{margin-top:6px;}\n  .drawer-actions{display:flex; gap:8px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line);}\n  .chip-row{display:flex; gap:6px; flex-wrap:wrap;}\n  .chip{font-size:11.5px; padding:3px 9px; border-radius:14px; border:1px solid var(--line); background:#fff; cursor:pointer; user-select:none;}\n  .chip.active{background:var(--slr-tint); border-color:var(--slr-green);}\n  footer{padding:16px 32px; font-size:11.5px; color:var(--ink-soft); line-height:1.5;}\n  .hidden{display:none !important;}\n  .rich-toolbar{display:flex; gap:4px; margin-bottom:4px;}\n  .rich-toolbar button{font-size:11px; padding:3px 7px; border:1px solid var(--line); border-radius:4px; background:#fff; cursor:pointer; font-family:var(--font-body);}\n  .rich-toolbar button:hover{background:var(--slr-tint); border-color:var(--slr-green);}\n  .rich-box{min-height:56px; border:1px solid var(--line); border-radius:6px; padding:8px; font-size:13.5px; background:#fff; overflow-y:auto;}\n  .rich-box:focus{outline:2px solid var(--slr-green-light); outline-offset:1px;}\n  .rich-box ul, .rich-box ol{margin:4px 0 4px 18px; padding:0;}\n  .accent-source{border-left:4px solid #3C6E8F;}\n  .accent-pathway{border-left:4px solid #4F7942;}\n  .accent-receptor{border-left:4px solid #A73434;}\n  td.accent-source{border-left:3px solid #3C6E8F;}\n  td.accent-pathway{border-left:3px solid #4F7942;}\n  td.accent-receptor{border-left:3px solid #A73434;}\n  mark{background:#FFE9A8; padding:0 1px;}\n  .filter-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;}\n  .filter-row .flabel{font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-right:2px;}\n  .filter-row input[type=text]{flex:1; min-width:180px;}\n  .stat-cards{display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:14px;}\n  .stat-card{border:1px solid var(--line); border-radius:8px; padding:10px 12px; text-align:center; cursor:pointer; background:#fff; transition:transform .1s ease;}\n  .stat-card:hover{transform:translateY(-2px);}\n  .stat-card.active{border-color:var(--slr-green); box-shadow:0 0 0 2px rgba(60,83,60,0.14) inset;}\n  .stat-card .stat-num{font-size:26px; font-weight:700; font-family:var(--font-display); line-height:1.15;}\n  .stat-card .stat-label{font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-top:2px;}\n  .stat-card .stat-hint{font-size:10px; color:var(--ink-soft); margin-top:2px;}\n  .stat-card.total .stat-num{color:var(--ink);}\n  .stat-card.Low .stat-num{color:var(--low);} .stat-card.Medium .stat-num{color:var(--med);}\n  .stat-card.High .stat-num{color:var(--high);} .stat-card.Extreme .stat-num{color:var(--extreme);}\n  .active-filters{display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--slr-tint); border:1px solid #D8E6C4; border-radius:8px; padding:8px 12px; margin-bottom:12px;}\n  .active-filters .af-label{font-size:12px; font-weight:700; color:var(--slr-green-deep);}\n  .af-chip{font-size:11.5px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:3px 8px 3px 10px; display:inline-flex; align-items:center; gap:6px;}\n  .af-x{cursor:pointer; color:var(--ink-soft); font-weight:700;}\n  .af-x:hover{color:var(--extreme);}\n  .af-clearall{font-size:11.5px; text-decoration:underline; cursor:pointer; color:var(--ink-soft); margin-left:auto;}\n  .matrix-count{font-size:15px; font-weight:800;}\n  .inline-rating-select{font-size:11px; padding:2px 3px; border:1px solid var(--line); border-radius:4px; max-width:92px; background:#fff;}\n  .export-menu{position:absolute; top:calc(100% + 4px); right:0; background:var(--paper-raised); border:1px solid var(--line);\n    border-radius:8px; box-shadow:var(--shadow); padding:6px; display:none; flex-direction:column; gap:2px; min-width:220px; z-index:20;}\n  .export-menu.show{display:flex;}\n  .export-menu-item{text-align:left; border:none; background:none; border-radius:6px;}\n  .export-menu-item:hover{background:var(--slr-tint);}\n\n\n  /* ---- Assessments bar, transfer, outcomes, groups ---- */\n  .assess-bar{display:flex; align-items:center; gap:10px; padding:10px 32px; background:#F0F3EA; border-bottom:1px solid var(--line); flex-wrap:wrap;}\n  .assess-bar .flabel{font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft);}\n  .assess-tabs{display:flex; gap:6px; flex-wrap:wrap;}\n  .assess-tab{font-family:var(--font-body); font-size:13px; padding:6px 12px; border-radius:18px; border:1px solid var(--line); background:#fff; cursor:pointer; display:inline-flex; gap:6px; align-items:center;}\n  .assess-tab.active{background:var(--slr-green); color:#fff; border-color:var(--slr-green);}\n  .assess-count{font-size:11px; font-weight:700; background:rgba(0,0,0,.08); border-radius:10px; padding:0 6px;}\n  .assess-tab.active .assess-count{background:rgba(255,255,255,.2);}\n  .assess-review{font-size:11px; color:#8A6A18; font-weight:700;}\n  .assess-tab.active .assess-review{color:var(--slr-lime);}\n  .unsaved-pill{display:inline-block; margin-left:8px; font-size:11px; letter-spacing:0; text-transform:none; background:#F6E9C9; color:#6B5A1E; border-radius:10px; padding:1px 8px; opacity:1;}\n  .drawer.wide{width:760px;}\n  .check-line{display:flex; gap:8px; align-items:flex-start; font-size:13px; margin:8px 0; cursor:pointer;}\n  .check-line input{margin-top:2px;}\n  .transfer-list{max-height:46vh; overflow-y:auto; border:1px solid var(--line); border-radius:8px;}\n  .transfer-row{display:flex; gap:8px; align-items:flex-start; padding:7px 10px; border-bottom:1px solid var(--line); font-size:13px; cursor:pointer;}\n  .transfer-row:last-child{border-bottom:none;}\n  .transfer-row.linked{opacity:.6;}\n  .transfer-box{background:#FFF9E8; border:1px solid #E9DBA6; border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:13px; color:#4E4217;}\n  .transfer-box ul{margin:6px 0 8px 18px; padding:0;}\n  .link-box{background:var(--slr-tint); border:1px solid #D8E6C4; border-radius:8px; padding:8px 12px; margin-bottom:14px; font-size:13px;}\n  .link-badge{display:inline-block; font-size:11px; border:1px solid #BFD3A8; background:var(--slr-tint); color:var(--slr-green-deep); border-radius:10px; padding:1px 7px; white-space:nowrap;}\n  .coverage-note{font-size:12.5px; background:#FFF9E8; border:1px solid #E9DBA6; color:#6B5A1E; border-radius:8px; padding:7px 12px; margin-bottom:10px;}\n  .outcome-chip{display:inline-block; font-size:11px; font-weight:700; border-radius:5px; padding:1px 6px; background:#E3EDF3; color:#2F5873; border:1px solid #C3D6E3;}\n  .outcome-chip.closure{background:#F2E6DA; color:#7A4A22; border-color:#E2CDB7;}\n  .outcome-list{max-height:220px; overflow-y:auto; border:1px solid var(--line); border-radius:6px; background:#fff;}\n  .outcome-row{display:flex; gap:8px; align-items:flex-start; padding:6px 8px; border-bottom:1px solid #EEEDE4; font-size:12.5px; line-height:1.35; cursor:pointer;}\n  .outcome-row input{margin-top:2px; flex:none;}\n  .outcome-empty{font-size:12.5px; color:var(--ink-soft); display:flex; gap:10px; align-items:center; flex-wrap:wrap;}\n  .harvest-box{background:var(--slr-tint); border:1px solid #D8E6C4; border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:13px;}\n  .theme-section{margin-bottom:16px;}\n  .theme-section-head{font-size:12px; font-weight:700; text-transform:uppercase; color:var(--slr-green-deep); margin-bottom:6px;}\n  .theme-row{display:flex; gap:6px; align-items:center; margin-bottom:4px; flex-wrap:wrap;}\n  .theme-row input[type=text]{flex:1 1 160px; min-width:0;}\n  .ai-box, .group-box{border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin:12px 0;}\n  .ai-box summary, .group-box summary{cursor:pointer; font-weight:600; font-size:13px;}\n  .scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch;}\n  .scroll-x > svg{min-width:640px;}\n  .badge-cell{white-space:nowrap;}\n  .muted-cell{color:var(--ink-soft); font-size:12px;}\n\n  /* ---- Mobile ---- */\n  @media (max-width: 900px){\n    .assess-bar{ padding-left:14px; padding-right:14px; }\n    .drawer.wide{ width:100%; }\n  }\n  @media (max-width: 700px){\n    .header{ padding:14px; }\n    .setup-bar{ flex-direction:column; align-items:stretch; gap:8px; }\n    .setup-bar .spacer{ display:none; }\n    .setup-bar > *{ width:100%; }\n    #project-name{ width:100% !important; }\n    .export-menu{ right:auto; left:0; width:100%; }\n    #export-menu-btn{ width:100%; }\n    .assess-bar{ flex-direction:column; align-items:stretch; }\n    .assess-tabs{ flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; }\n    .assess-tab{ flex:none; }\n    .panel{ margin:10px 8px; border-radius:8px; }\n    .panel-head, .panel-body{ padding:12px; }\n    .panel-head .chip-row{ width:100%; overflow-x:auto; flex-wrap:nowrap; }\n    .panel-head .chip{ flex:none; }\n    .filter-row .chip-row{ flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; }\n    .filter-row .chip{ flex:none; }\n    .risk-matrix{ overflow-x:auto; }\n    .risk-matrix td.rate-cell{ width:50px; height:44px; }\n    .risk-matrix .cell-count{ font-size:16px; }\n    .risk-matrix .rating-tag{ font-size:7.5px; }\n    .risk-matrix td.like-label{ font-size:11px; padding-right:4px; white-space:normal; }\n    .stat-cards{ grid-template-columns:repeat(3, 1fr); gap:6px; }\n    .stat-card{ padding:8px 4px; }\n    .stat-card .stat-num{ font-size:21px; }\n    .stat-card .stat-hint{ display:none; }\n    /* Register becomes a stack of cards */\n    #register-body{ overflow-x:visible !important; }\n    #register-body > table, #register-body > table > tbody, #register-body > table > tbody > tr, #register-body > table > tbody > tr > td{ display:block; width:100%; }\n    #register-body > table > thead{ display:none; }\n    #register-body > table > tbody > tr{ border:1px solid var(--line); border-radius:10px; margin-bottom:10px; padding:8px 12px; background:#fff; box-shadow:var(--shadow); position:relative; }\n    #register-body > table > tbody > tr > td{ border:none; padding:4px 0; max-width:none; }\n    #register-body > table > tbody > tr > td.accent-source, #register-body > table > tbody > tr > td.accent-pathway, #register-body > table > tbody > tr > td.accent-receptor{ padding-left:8px; margin:4px 0; }\n    #register-body td[data-label]::before{ content:attr(data-label); display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-bottom:1px; }\n    #register-body td.id-cell{ font-weight:700; font-size:15px; }\n    #register-body td.id-cell::before{ display:inline !important; margin-right:4px; }\n    #register-body td.badge-cell:empty, #register-body td[data-label]:empty{ display:none; }\n    .drawer{ max-width:100vw; }\n    #register-body td.edit-cell .btn{ width:100%; }\n    .inline-rating-select{ max-width:none; }\n    .drawer{ padding:16px 14px 0; }\n    .drawer-actions{ position:sticky; bottom:0; background:var(--paper-raised); padding:10px 0 14px; flex-wrap:wrap; margin-top:12px; z-index:2; }\n    .theme-row select{ flex:1 1 100%; }\n    #outcome-table table, #outcome-table tbody, #outcome-table tr, #outcome-table td{ display:block; width:100%; }\n    #outcome-table thead{ display:none; }\n    #outcome-table tr{ border:1px solid var(--line); border-radius:8px; margin-bottom:8px; padding:6px; }\n    #outcome-table td{ border:none; }\n  }\n  @media (pointer: coarse){\n    .btn, .assess-tab{ min-height:40px; }\n    .chip{ padding:7px 11px; font-size:12.5px; }\n    select, input[type=text], textarea, .rich-box, .field textarea, .field select, .field input[type=text]{ font-size:16px; } /* stops iOS zooming on focus */\n    .inline-rating-select{ font-size:14px; padding:5px; }\n    .outcome-row, .transfer-row{ padding:10px; }\n  }\n\n  /* ---- Responsive ---- */\n  @media (max-width: 900px){\n    .header, .scope-note, .setup-bar{ padding-left:14px; padding-right:14px; }\n    .panel{ margin:12px; }\n    .stat-cards{ grid-template-columns:repeat(2, 1fr); }\n    .drawer{ width:100%; }\n    #register-body, #matrix-body, #pathway-analysis-body, .panel-body > table{ overflow-x:auto; }\n    table{ font-size:12px; }\n  }\n  @media (max-width: 520px){\n    .two-col{ grid-template-columns:1fr; }\n    .header h1{ font-size:19px; }\n  }\n\n  /* ---- Print ---- */\n  @media print{\n    body{ background:#fff; padding-bottom:0; }\n    .header{ background:none !important; color:#000 !important; border-bottom:2px solid #000; }\n    .header .eyebrow{ opacity:1; color:#333; }\n    .scope-note, .setup-bar, .assess-bar, .drawer-overlay, .rich-toolbar, footer,\n    .btn, .chip, .export-menu, #flag-filter-chip, #archived-filter-chip{ display:none !important; }\n    .panel{ box-shadow:none; border:1px solid #999; break-inside:avoid; margin:0 0 16px; }\n    a[href]:after{ content:\"\"; }\n  }\n\n  #rd-save-copy{background:#fff; color:var(--slr-green-deep); border-color:#fff; font-weight:600; padding:9px 16px;}\n  .header .btn.agent{margin-left:auto;}\n  .header .btn.agent + #rd-save-copy{margin-left:0;}\n  .rd-notice{display:flex; gap:12px; align-items:flex-start; margin:14px 28px 0; padding:10px 14px; border-radius:8px; background:#FFF9E8; border:1px solid #E9DBA6; font-size:13px; white-space:pre-line;}\n  .rd-notice .btn{padding:2px 8px; font-size:12px;}\n  .rd-context{margin:14px 28px 0; background:#fff; border:1px solid var(--slr-line, #DCDACD); border-radius:10px; padding:12px 16px; font-size:13.5px;}\n  .rd-context summary{cursor:pointer; font-weight:700;}\n  .rd-context p{margin:8px 0 4px;}\n  .rd-context h4{margin:10px 0 4px; font-size:13px;}\n  .rd-context ul{margin:0; padding-left:20px;}\n  @media print{ #rd-save-copy, .rd-notice{display:none !important;} }\n  @media (max-width:700px){ .rd-context, .rd-notice{margin:12px 12px 0;} }\n</style>");
-  document.body.insertAdjacentHTML("afterbegin", "<div class=\"header\">\n  <div>\n    <div class=\"eyebrow\">Framework \u00b7 Project \u00b7 Session</div>\n    <h1>Risk Assessment Dashboard</h1>\n    <div class=\"eyebrow\" id=\"header-sub\">No project loaded</div>\n  </div>\n  <button class=\"btn agent\" id=\"paste-agent-btn\" type=\"button\" title=\"Paste a code block from the Risk Assessment agent\">Paste from agent\u2026</button>\n  <button class=\"btn\" id=\"rd-save-copy\" type=\"button\" title=\"Download this dashboard as an .html file to keep and share\">Save copy</button>\n</div>\n\n<div class=\"scope-note\">\n  A project can hold several framework assessments (e.g. DWER works approval and MDCP). Use <strong>\u21c4 Transfer</strong> to carry risks\n  between them \u2014 they stay linked, so nothing is re-typed. Work lives in this browser tab until you click <strong>Save copy</strong>.\n</div>\n\n<div id=\"rd-notice\"></div>\n<div id=\"rd-context\"></div>\n\n<div class=\"setup-bar\">\n  <label>Framework</label>\n  <select id=\"framework-select\">\n    <option value=\"mdcp\">MDCP / DMPE Risk Matrix (2025b)</option>\n    <option value=\"dwer\">DWER Works Approval Risk Framework</option>\n    <option value=\"epa-emp\">EP Act Part IV EMP (EPA WA factors)</option>\n    <option value=\"epbc-emp\">EPBC Act EMP (MNES / DCCEEW)</option>\n    <option value=\"custom\">Custom (load file)\u2026</option>\n  </select>\n  <input type=\"file\" id=\"custom-framework-file\" accept=\"application/json\" style=\"display:none;\">\n  <button class=\"btn\" id=\"download-framework-template-btn\" style=\"font-size:11.5px; padding:5px 9px;\">Example framework file \u2b07</button>\n\n  <span class=\"spacer\"></span>\n\n  <label>Project</label>\n  <input type=\"text\" id=\"project-name\" placeholder=\"Project name\" style=\"width:220px;\">\n  <button class=\"btn\" id=\"new-project-btn\">New project</button>\n  <button class=\"btn\" id=\"load-session-btn\">Load data (.json)\u2026</button>\n  <input type=\"file\" id=\"load-session-file\" accept=\"application/json\" style=\"display:none;\">\n  <button class=\"btn\" id=\"save-session-btn\">Save data (.json)</button>\n\n  <span class=\"spacer\"></span>\n\n  <div style=\"position:relative;\">\n    <button class=\"btn\" id=\"export-menu-btn\" aria-label=\"Export options\" aria-haspopup=\"true\">Export \u25be</button>\n    <div class=\"export-menu\" id=\"export-menu\">\n      <button class=\"btn export-menu-item\" id=\"export-flat-btn\">Export to Excel</button>\n      <button class=\"btn export-menu-item hidden\" id=\"export-mdcp-btn\">Export to MDCP template\u2026</button>\n      <button class=\"btn export-menu-item hidden\" id=\"export-csm-btn\">Export to CSM spreadsheet</button>\n    </div>\n  </div>\n  <input type=\"file\" id=\"mdcp-template-file\" accept=\".xlsx\" style=\"display:none;\">\n</div>\n\n<div class=\"assess-bar\" id=\"assess-bar\"></div>\n\n<div class=\"panel\">\n  <div class=\"panel-head\">\n    <h2>Risk rating matrix</h2>\n    <span class=\"panel-sub\" id=\"matrix-sub\"></span>\n    <span class=\"spacer\"></span>\n    <div class=\"chip-row\">\n      <span class=\"chip active\" data-view=\"inh\" id=\"view-inh\">Inherent</span>\n      <span class=\"chip\" data-view=\"res\" id=\"view-res\">Residual</span>\n    </div>\n  </div>\n  <div class=\"panel-body\">\n    <div id=\"filter-controls\"></div>\n    <div id=\"active-filters-bar\"></div>\n    <div id=\"stat-cards\"></div>\n    <div id=\"matrix-body\"></div>\n  </div>\n</div>\n\n<div class=\"panel\">\n  <div class=\"panel-head\">\n    <h2>Risk register</h2>\n    <span class=\"panel-sub\" id=\"register-sub\"></span>\n    <span class=\"spacer\"></span>\n    <button class=\"btn hidden\" id=\"outcome-lib-btn\" type=\"button\">Outcome library\u2026</button>\n    <span class=\"chip hidden\" id=\"review-filter-chip\">\u26a0 Needs review</span>\n    <span class=\"chip\" id=\"flag-filter-chip\">\ud83d\udea9 Flagged only</span>\n    <span class=\"chip\" id=\"archived-filter-chip\">\ud83d\uddc4 Show archived</span>\n    <button class=\"btn primary\" id=\"add-risk-btn\">+ Add risk</button>\n  </div>\n  <div class=\"panel-body\" id=\"register-body\"></div>\n</div>\n\n<div class=\"panel\">\n  <div class=\"panel-head\">\n    <h2>Pathway analysis</h2>\n    <span class=\"panel-sub\">Groups risks by their Source / Pathway / Receptor</span>\n    <span class=\"spacer\"></span>\n    <div class=\"chip-row\">\n      <span class=\"chip active\" data-tab=\"gap\" id=\"tab-gap\">Gap matrix</span>\n      <span class=\"chip\" data-tab=\"spr\" id=\"tab-spr\">Source \u2192 Pathway \u2192 Receptor</span>\n      <span class=\"chip\" data-tab=\"net\" id=\"tab-net\">Factor network</span>\n    </div>\n    <button class=\"btn\" id=\"auto-detect-themes-btn\" title=\"Group risks that share the same (or nearly the same) Source / Pathway / Receptor phrase\">\u2728 Group by phrase</button>\n    <button class=\"btn\" id=\"manage-themes-btn\">Manage groups\u2026</button>\n  </div>\n  <div class=\"panel-body\" id=\"pathway-analysis-body\"></div>\n</div>\n\n<footer id=\"footer-note\"></footer>\n\n<div class=\"drawer-overlay\" id=\"overlay\">\n  <div class=\"drawer\" id=\"drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Edit risk\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"theme-overlay\">\n  <div class=\"drawer\" id=\"theme-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Manage pathway themes\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"outcome-overlay\" style=\"z-index:60;\">\n  <div class=\"drawer wide\" id=\"outcome-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Outcome library\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"transfer-overlay\">\n  <div class=\"drawer wide\" id=\"transfer-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Transfer risks\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"paste-overlay\">\n  <div class=\"drawer wide\" id=\"paste-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Paste from agent\">\n    <h3>Paste risks from the agent</h3>\n    <p class=\"panel-sub\" style=\"margin-top:-6px;\">Paste a code block from the Risk Assessment agent: a batch of extra risks, or a whole dashboard. Ratings are re-checked against the framework matrix as they load.</p>\n    <div class=\"field\">\n      <label for=\"paste-text\">Agent output</label>\n      <textarea id=\"paste-text\" spellcheck=\"false\" style=\"min-height:42vh; font-family:Consolas,Menlo,monospace; font-size:12.5px;\" placeholder='{ \"formatVersion\": 2, ... }'></textarea>\n    </div>\n    <label class=\"check-line\"><input type=\"radio\" name=\"paste-mode\" value=\"replace\" checked> Replace what's open (new project or updated register)</label>\n    <label class=\"check-line\"><input type=\"radio\" name=\"paste-mode\" value=\"add\"> Add to what's open (extra batch of risks)</label>\n    <div id=\"paste-error\" class=\"transfer-box hidden\" role=\"alert\"></div>\n    <div class=\"drawer-actions\">\n      <button class=\"btn primary\" id=\"paste-go\" type=\"button\">Load into dashboard</button>\n      <button class=\"btn\" id=\"paste-cancel\" type=\"button\">Cancel</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"domain-overlay\">\n  <div class=\"drawer\" id=\"domain-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Manage domains\"></div>\n</div>");
+  document.head.insertAdjacentHTML("beforeend", "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap\" rel=\"stylesheet\">\n<style>\n  :root{\n    --ink:#1E1E1E; --ink-soft:#565D4F;\n    --paper:#F6F6F2; --paper-raised:#FFFFFF; --line:#DCDACD;\n    --slr-green:#3C533C; --slr-green-deep:#263326; --slr-lime:#D6F591; --slr-tint:#EEF7DB;\n    --low:#5C8A5C; --low-bg:#E4EDE0;\n    --med:#C99A2E; --med-bg:#F6E9C9;\n    --high:#C4652B; --high-bg:#F5DDC8;\n    --extreme:#A73434; --extreme-bg:#F2D4D2;\n    --font-body:\"Figtree\",\"Segoe UI\",\"Helvetica Neue\",Arial,sans-serif;\n    --font-display:\"Playfair Display\",Georgia,serif;\n    --shadow:0 1px 2px rgba(28,27,24,0.06), 0 4px 14px rgba(28,27,24,0.06);\n  }\n  *{box-sizing:border-box;}\n  html,body{margin:0;padding:0;}\n  body{background:var(--paper); color:var(--ink); font-family:var(--font-body); padding-bottom:60px;}\n  .header{background:linear-gradient(135deg,#1B241B 0%,#263326 50%,#3C533C 100%); color:#F6F6F2; padding:22px 32px;}\n  .header{display:flex; align-items:center; gap:16px; flex-wrap:wrap;}\n  .header .btn.agent{margin-left:auto; background:var(--slr-lime); color:var(--slr-green-deep); border-color:var(--slr-lime); font-weight:600; padding:9px 16px;}\n  .header .btn.agent:hover{background:#E4FAB3; border-color:#E4FAB3;}\n  .header .btn.agent:focus-visible{outline:2px solid #fff; outline-offset:2px;}\n  .header h1{margin:0 0 4px; font-size:22px; font-weight:700;}\n  .eyebrow{font-size:12px; letter-spacing:.04em; text-transform:uppercase; opacity:.75;}\n  .scope-note{background:#FFF9E8; border-bottom:1px solid #E9DBA6; color:#6B5A1E; font-size:12.5px; padding:8px 32px;}\n  .setup-bar{display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:14px 32px; background:var(--paper-raised); border-bottom:1px solid var(--line);}\n  .setup-bar label{font-size:11.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-right:4px;}\n  select, input[type=text]{font-family:var(--font-body); font-size:13.5px; padding:6px 8px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink);}\n  .btn{font-family:var(--font-body); font-size:13px; padding:7px 13px; border-radius:7px; border:1px solid var(--line); background:#fff; color:var(--ink); cursor:pointer;}\n  .btn:hover{border-color:var(--slr-green);}\n  .btn.primary{background:var(--slr-green); color:#fff; border-color:var(--slr-green);}\n  .btn.primary:hover{background:var(--slr-green-deep);}\n  .btn.danger{color:#A73434; border-color:#E5B9B9;}\n  .spacer{flex:1 1 auto;}\n  .panel{margin:20px 32px; background:var(--paper-raised); border:1px solid var(--line); border-radius:10px; box-shadow:var(--shadow); overflow:hidden;}\n  .panel-head{padding:14px 18px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:12px; flex-wrap:wrap;}\n  .panel-head h2{margin:0; font-size:15px;}\n  .panel-sub{font-size:12px; color:var(--ink-soft);}\n  .panel-body{padding:16px 18px;}\n  table{border-collapse:collapse; width:100%; font-size:13px;}\n  th,td{border:1px solid var(--line); padding:7px 9px; text-align:left; vertical-align:top;}\n  th{background:#F0F0E8; font-size:11.5px; text-transform:uppercase; letter-spacing:.02em; color:var(--ink-soft);}\n  td.wrap{max-width:260px; white-space:pre-wrap;}\n  .rating{display:inline-block; padding:2px 9px; border-radius:20px; font-size:12px; font-weight:600; color:#fff;}\n  .rating.Low{background:var(--low);} .rating.Medium{background:var(--med);}\n  .rating.High{background:var(--high);} .rating.Extreme{background:var(--extreme);}\n  .matrix-table td{text-align:center; cursor:pointer; font-size:12.5px; font-weight:600; color:#3a3a2f;}\n  .matrix-table td.hdr{background:#F0F0E8; cursor:default; font-weight:600; color:var(--ink-soft); font-size:11px; text-transform:uppercase;}\n  .matrix-table td.Low{background:var(--low-bg);} .matrix-table td.Medium{background:var(--med-bg);}\n  .matrix-table td.High{background:var(--high-bg);} .matrix-table td.Extreme{background:var(--extreme-bg);}\n  .matrix-table td.active-cell{outline:3px solid var(--slr-green-deep); outline-offset:-3px;}\n  .matrix-table td.gap-cell{background:#F5F5F0; color:#B0AFA0;}\n  .risk-matrix table.matrix-table{border-collapse:separate; border-spacing:6px; width:auto;}\n  .risk-matrix td{border:none; padding:0;}\n  .risk-matrix td.hdr{font-size:11px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.4px; text-align:center; padding:4px; cursor:default; background:none;}\n  .risk-matrix td.axis-label-x{text-align:center; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); padding-bottom:2px;}\n  .risk-matrix td.axis-label-y{writing-mode:vertical-rl; transform:rotate(180deg); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); text-align:center; padding-right:4px;}\n  .risk-matrix td.like-label{font-size:12px; font-weight:600; text-align:right; padding-right:10px; white-space:nowrap; color:var(--ink); background:none;}\n  .risk-matrix td.rate-cell{\n    width:78px; height:60px; border-radius:8px; text-align:center; vertical-align:middle;\n    cursor:pointer; position:relative; transition:transform .12s ease, box-shadow .12s ease; border:2px solid transparent;\n  }\n  .risk-matrix td.rate-cell:hover{transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,.18);}\n  .risk-matrix td.rate-cell.active-cell{border-color:var(--slr-green); box-shadow:0 0 0 2px rgba(60,83,60,.18) inset; outline:none;}\n  .risk-matrix .rating-tag{display:block; font-size:8.5px; text-transform:uppercase; letter-spacing:.5px; font-weight:700; opacity:.85;}\n  .risk-matrix .cell-count{display:block; font-size:20px; font-weight:800; font-family:var(--font-display); line-height:1.15;}\n  .risk-matrix td.rate-cell.empty-cell{opacity:.35;}\n  .risk-matrix td.rate-cell.Low{background:var(--low-bg); color:var(--low);}\n  .risk-matrix td.rate-cell.Medium{background:var(--med-bg); color:#8A6A18;}\n  .risk-matrix td.rate-cell.High{background:var(--high-bg); color:var(--high);}\n  .risk-matrix td.rate-cell.Extreme{background:var(--extreme-bg); color:var(--extreme);}\n  .empty-state{padding:40px 18px; text-align:center; color:var(--ink-soft); font-size:14px;}\n  .drawer-overlay{position:fixed; inset:0; background:rgba(20,22,17,.45); display:none; align-items:flex-start; justify-content:flex-end; z-index:50;}\n  .drawer-overlay.show{display:flex;}\n  .drawer{width:520px; max-width:94vw; height:100%; background:var(--paper-raised); overflow-y:auto; padding:22px 24px; box-shadow:-8px 0 24px rgba(0,0,0,.15);}\n  .drawer h3{margin-top:0;}\n  .field{margin-bottom:14px;}\n  .field label{display:block; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-bottom:4px;}\n  .field textarea, .field select, .field input[type=text]{width:100%; padding:8px; border:1px solid var(--line); border-radius:6px; font-family:var(--font-body); font-size:13.5px;}\n  .field textarea{min-height:64px; resize:vertical;}\n  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:10px;}\n  .rating-preview{margin-top:6px;}\n  .drawer-actions{display:flex; gap:8px; margin-top:18px; padding-top:14px; border-top:1px solid var(--line);}\n  .chip-row{display:flex; gap:6px; flex-wrap:wrap;}\n  .chip{font-size:11.5px; padding:3px 9px; border-radius:14px; border:1px solid var(--line); background:#fff; cursor:pointer; user-select:none;}\n  .chip.active{background:var(--slr-tint); border-color:var(--slr-green);}\n  footer{padding:16px 32px; font-size:11.5px; color:var(--ink-soft); line-height:1.5;}\n  .hidden{display:none !important;}\n  .rich-toolbar{display:flex; gap:4px; margin-bottom:4px;}\n  .rich-toolbar button{font-size:11px; padding:3px 7px; border:1px solid var(--line); border-radius:4px; background:#fff; cursor:pointer; font-family:var(--font-body);}\n  .rich-toolbar button:hover{background:var(--slr-tint); border-color:var(--slr-green);}\n  .rich-box{min-height:56px; border:1px solid var(--line); border-radius:6px; padding:8px; font-size:13.5px; background:#fff; overflow-y:auto;}\n  .rich-box:focus{outline:2px solid var(--slr-green-light); outline-offset:1px;}\n  .rich-box ul, .rich-box ol{margin:4px 0 4px 18px; padding:0;}\n  .accent-source{border-left:4px solid #3C6E8F;}\n  .accent-pathway{border-left:4px solid #4F7942;}\n  .accent-receptor{border-left:4px solid #A73434;}\n  td.accent-source{border-left:3px solid #3C6E8F;}\n  td.accent-pathway{border-left:3px solid #4F7942;}\n  td.accent-receptor{border-left:3px solid #A73434;}\n  mark{background:#FFE9A8; padding:0 1px;}\n  .filter-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;}\n  .filter-row .flabel{font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-right:2px;}\n  .filter-row input[type=text]{flex:1; min-width:180px;}\n  .stat-cards{display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-bottom:14px;}\n  .stat-card{border:1px solid var(--line); border-radius:8px; padding:10px 12px; text-align:center; cursor:pointer; background:#fff; transition:transform .1s ease;}\n  .stat-card:hover{transform:translateY(-2px);}\n  .stat-card.active{border-color:var(--slr-green); box-shadow:0 0 0 2px rgba(60,83,60,0.14) inset;}\n  .stat-card .stat-num{font-size:26px; font-weight:700; font-family:var(--font-display); line-height:1.15;}\n  .stat-card .stat-label{font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-top:2px;}\n  .stat-card .stat-hint{font-size:10px; color:var(--ink-soft); margin-top:2px;}\n  .stat-card.total .stat-num{color:var(--ink);}\n  .stat-card.Low .stat-num{color:var(--low);} .stat-card.Medium .stat-num{color:var(--med);}\n  .stat-card.High .stat-num{color:var(--high);} .stat-card.Extreme .stat-num{color:var(--extreme);}\n  .active-filters{display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--slr-tint); border:1px solid #D8E6C4; border-radius:8px; padding:8px 12px; margin-bottom:12px;}\n  .active-filters .af-label{font-size:12px; font-weight:700; color:var(--slr-green-deep);}\n  .af-chip{font-size:11.5px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:3px 8px 3px 10px; display:inline-flex; align-items:center; gap:6px;}\n  .af-x{cursor:pointer; color:var(--ink-soft); font-weight:700;}\n  .af-x:hover{color:var(--extreme);}\n  .af-clearall{font-size:11.5px; text-decoration:underline; cursor:pointer; color:var(--ink-soft); margin-left:auto;}\n  .matrix-count{font-size:15px; font-weight:800;}\n  .inline-rating-select{font-size:11px; padding:2px 3px; border:1px solid var(--line); border-radius:4px; max-width:92px; background:#fff;}\n  .export-menu{position:absolute; top:calc(100% + 4px); right:0; background:var(--paper-raised); border:1px solid var(--line);\n    border-radius:8px; box-shadow:var(--shadow); padding:6px; display:none; flex-direction:column; gap:2px; min-width:220px; z-index:20;}\n  .export-menu.show{display:flex;}\n  .export-menu-item{text-align:left; border:none; background:none; border-radius:6px;}\n  .export-menu-item:hover{background:var(--slr-tint);}\n\n\n  /* ---- Assessments bar, transfer, outcomes, groups ---- */\n  .assess-bar{display:flex; align-items:center; gap:10px; padding:10px 32px; background:#F0F3EA; border-bottom:1px solid var(--line); flex-wrap:wrap;}\n  .assess-bar .flabel{font-size:11px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft);}\n  .assess-tabs{display:flex; gap:6px; flex-wrap:wrap;}\n  .assess-tab{font-family:var(--font-body); font-size:13px; padding:6px 12px; border-radius:18px; border:1px solid var(--line); background:#fff; cursor:pointer; display:inline-flex; gap:6px; align-items:center;}\n  .assess-tab.active{background:var(--slr-green); color:#fff; border-color:var(--slr-green);}\n  .assess-count{font-size:11px; font-weight:700; background:rgba(0,0,0,.08); border-radius:10px; padding:0 6px;}\n  .assess-tab.active .assess-count{background:rgba(255,255,255,.2);}\n  .assess-review{font-size:11px; color:#8A6A18; font-weight:700;}\n  .assess-tab.active .assess-review{color:var(--slr-lime);}\n  .unsaved-pill{display:inline-block; margin-left:8px; font-size:11px; letter-spacing:0; text-transform:none; background:#F6E9C9; color:#6B5A1E; border-radius:10px; padding:1px 8px; opacity:1;}\n  .drawer.wide{width:760px;}\n  .check-line{display:flex; gap:8px; align-items:flex-start; font-size:13px; margin:8px 0; cursor:pointer;}\n  .check-line input{margin-top:2px;}\n  .transfer-list{max-height:46vh; overflow-y:auto; border:1px solid var(--line); border-radius:8px;}\n  .transfer-row{display:flex; gap:8px; align-items:flex-start; padding:7px 10px; border-bottom:1px solid var(--line); font-size:13px; cursor:pointer;}\n  .transfer-row:last-child{border-bottom:none;}\n  .transfer-row.linked{opacity:.6;}\n  .transfer-box{background:#FFF9E8; border:1px solid #E9DBA6; border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:13px; color:#4E4217;}\n  .transfer-box ul{margin:6px 0 8px 18px; padding:0;}\n  .link-box{background:var(--slr-tint); border:1px solid #D8E6C4; border-radius:8px; padding:8px 12px; margin-bottom:14px; font-size:13px;}\n  .link-badge{display:inline-block; font-size:11px; border:1px solid #BFD3A8; background:var(--slr-tint); color:var(--slr-green-deep); border-radius:10px; padding:1px 7px; white-space:nowrap;}\n  .coverage-note{font-size:12.5px; background:#FFF9E8; border:1px solid #E9DBA6; color:#6B5A1E; border-radius:8px; padding:7px 12px; margin-bottom:10px;}\n  .outcome-chip{display:inline-block; font-size:11px; font-weight:700; border-radius:5px; padding:1px 6px; background:#E3EDF3; color:#2F5873; border:1px solid #C3D6E3;}\n  .outcome-chip.closure{background:#F2E6DA; color:#7A4A22; border-color:#E2CDB7;}\n  .outcome-list{max-height:220px; overflow-y:auto; border:1px solid var(--line); border-radius:6px; background:#fff;}\n  .outcome-row{display:flex; gap:8px; align-items:flex-start; padding:6px 8px; border-bottom:1px solid #EEEDE4; font-size:12.5px; line-height:1.35; cursor:pointer;}\n  .outcome-row input{margin-top:2px; flex:none;}\n  .outcome-empty{font-size:12.5px; color:var(--ink-soft); display:flex; gap:10px; align-items:center; flex-wrap:wrap;}\n  .harvest-box{background:var(--slr-tint); border:1px solid #D8E6C4; border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:13px;}\n  .theme-section{margin-bottom:16px;}\n  .theme-section-head{font-size:12px; font-weight:700; text-transform:uppercase; color:var(--slr-green-deep); margin-bottom:6px;}\n  .theme-row{display:flex; gap:6px; align-items:center; margin-bottom:4px; flex-wrap:wrap;}\n  .theme-row input[type=text]{flex:1 1 160px; min-width:0;}\n  .ai-box, .group-box{border:1px solid var(--line); border-radius:8px; padding:8px 12px; margin:12px 0;}\n  .ai-box summary, .group-box summary{cursor:pointer; font-weight:600; font-size:13px;}\n  .scroll-x{overflow-x:auto; -webkit-overflow-scrolling:touch;}\n  .scroll-x > svg{min-width:640px;}\n  .badge-cell{white-space:nowrap;}\n  .muted-cell{color:var(--ink-soft); font-size:12px;}\n\n  /* ---- Mobile ---- */\n  @media (max-width: 900px){\n    .assess-bar{ padding-left:14px; padding-right:14px; }\n    .drawer.wide{ width:100%; }\n  }\n  @media (max-width: 700px){\n    .header{ padding:14px; }\n    .setup-bar{ flex-direction:column; align-items:stretch; gap:8px; }\n    .setup-bar .spacer{ display:none; }\n    .setup-bar > *{ width:100%; }\n    #project-name{ width:100% !important; }\n    .export-menu{ right:auto; left:0; width:100%; }\n    #export-menu-btn{ width:100%; }\n    .assess-bar{ flex-direction:column; align-items:stretch; }\n    .assess-tabs{ flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; }\n    .assess-tab{ flex:none; }\n    .panel{ margin:10px 8px; border-radius:8px; }\n    .panel-head, .panel-body{ padding:12px; }\n    .panel-head .chip-row{ width:100%; overflow-x:auto; flex-wrap:nowrap; }\n    .panel-head .chip{ flex:none; }\n    .filter-row .chip-row{ flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px; }\n    .filter-row .chip{ flex:none; }\n    .risk-matrix{ overflow-x:auto; }\n    .risk-matrix td.rate-cell{ width:50px; height:44px; }\n    .risk-matrix .cell-count{ font-size:16px; }\n    .risk-matrix .rating-tag{ font-size:7.5px; }\n    .risk-matrix td.like-label{ font-size:11px; padding-right:4px; white-space:normal; }\n    .stat-cards{ grid-template-columns:repeat(3, 1fr); gap:6px; }\n    .stat-card{ padding:8px 4px; }\n    .stat-card .stat-num{ font-size:21px; }\n    .stat-card .stat-hint{ display:none; }\n    /* Register becomes a stack of cards */\n    #register-body{ overflow-x:visible !important; }\n    #register-body > table, #register-body > table > tbody, #register-body > table > tbody > tr, #register-body > table > tbody > tr > td{ display:block; width:100%; }\n    #register-body > table > thead{ display:none; }\n    #register-body > table > tbody > tr{ border:1px solid var(--line); border-radius:10px; margin-bottom:10px; padding:8px 12px; background:#fff; box-shadow:var(--shadow); position:relative; }\n    #register-body > table > tbody > tr > td{ border:none; padding:4px 0; max-width:none; }\n    #register-body > table > tbody > tr > td.accent-source, #register-body > table > tbody > tr > td.accent-pathway, #register-body > table > tbody > tr > td.accent-receptor{ padding-left:8px; margin:4px 0; }\n    #register-body td[data-label]::before{ content:attr(data-label); display:block; font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-bottom:1px; }\n    #register-body td.id-cell{ font-weight:700; font-size:15px; }\n    #register-body td.id-cell::before{ display:inline !important; margin-right:4px; }\n    #register-body td.badge-cell:empty, #register-body td[data-label]:empty{ display:none; }\n    .drawer{ max-width:100vw; }\n    #register-body td.edit-cell .btn{ width:100%; }\n    .inline-rating-select{ max-width:none; }\n    .drawer{ padding:16px 14px 0; }\n    .drawer-actions{ position:sticky; bottom:0; background:var(--paper-raised); padding:10px 0 14px; flex-wrap:wrap; margin-top:12px; z-index:2; }\n    .theme-row select{ flex:1 1 100%; }\n    #outcome-table table, #outcome-table tbody, #outcome-table tr, #outcome-table td{ display:block; width:100%; }\n    #outcome-table thead{ display:none; }\n    #outcome-table tr{ border:1px solid var(--line); border-radius:8px; margin-bottom:8px; padding:6px; }\n    #outcome-table td{ border:none; }\n  }\n  @media (pointer: coarse){\n    .btn, .assess-tab{ min-height:40px; }\n    .chip{ padding:7px 11px; font-size:12.5px; }\n    select, input[type=text], textarea, .rich-box, .field textarea, .field select, .field input[type=text]{ font-size:16px; } /* stops iOS zooming on focus */\n    .inline-rating-select{ font-size:14px; padding:5px; }\n    .outcome-row, .transfer-row{ padding:10px; }\n  }\n\n  /* ---- Responsive ---- */\n  @media (max-width: 900px){\n    .header, .scope-note, .setup-bar{ padding-left:14px; padding-right:14px; }\n    .panel{ margin:12px; }\n    .stat-cards{ grid-template-columns:repeat(2, 1fr); }\n    .drawer{ width:100%; }\n    #register-body, #matrix-body, #pathway-analysis-body, .panel-body > table{ overflow-x:auto; }\n    table{ font-size:12px; }\n  }\n  @media (max-width: 520px){\n    .two-col{ grid-template-columns:1fr; }\n    .header h1{ font-size:19px; }\n  }\n\n  /* ---- Print ---- */\n  @media print{\n    body{ background:#fff; padding-bottom:0; }\n    .header{ background:none !important; color:#000 !important; border-bottom:2px solid #000; }\n    .header .eyebrow{ opacity:1; color:#333; }\n    .scope-note, .setup-bar, .assess-bar, .drawer-overlay, .rich-toolbar, footer,\n    .btn, .chip, .export-menu, #flag-filter-chip, #archived-filter-chip{ display:none !important; }\n    .panel{ box-shadow:none; border:1px solid #999; break-inside:avoid; margin:0 0 16px; }\n    a[href]:after{ content:\"\"; }\n  }\n\n  #rd-save-copy{background:#fff; color:var(--slr-green-deep); border-color:#fff; font-weight:600; padding:9px 16px;}\n  .header .btn.agent{margin-left:auto;}\n  .header .btn.agent + #rd-save-copy{margin-left:0;}\n  .rd-notice{display:flex; gap:12px; align-items:flex-start; margin:14px 28px 0; padding:10px 14px; border-radius:8px; background:#FFF9E8; border:1px solid #E9DBA6; font-size:13px; white-space:pre-line;}\n  .rd-notice .btn{padding:2px 8px; font-size:12px;}\n  .rd-context{margin:14px 28px 0; background:#fff; border:1px solid var(--slr-line, #DCDACD); border-radius:10px; padding:12px 16px; font-size:13.5px;}\n  .rd-context summary{cursor:pointer; font-weight:700;}\n  .rd-context p{margin:8px 0 4px;}\n  .rd-context h4{margin:10px 0 4px; font-size:13px;}\n  .rd-context ul{margin:0; padding-left:20px;}\n  @media print{ #rd-save-copy, .rd-notice{display:none !important;} }\n  @media (max-width:700px){ .rd-context, .rd-notice{margin:12px 12px 0;} }\n  .spr-s{color:#3C6E8F; font-weight:600;} .spr-p{color:#4F7942; font-weight:600;} .spr-r{color:#A73434; font-weight:600;} .spr-i{color:#8A6A18; font-weight:600;}\n  .spr-badge{display:inline-block; padding:2px 8px; border-radius:20px; font-size:11.5px; font-weight:700; white-space:nowrap;}\n  .spr-ok{background:var(--low-bg); color:#3F6B3F;} .spr-draft{background:#E3EDF3; color:#2F5873;} .spr-bad{background:var(--extreme-bg); color:var(--extreme);}\n  .spr-legend{display:flex; flex-wrap:wrap; gap:14px; align-items:center; font-size:12px; margin:0 0 8px;}\n  .spr-legend span{display:inline-flex; align-items:center; gap:6px;}\n  .spr-legend i{display:inline-block; width:22px; height:5px; border-radius:3px;}\n  .spr-legend i.dash{height:0; border-top:3px dashed #8A8A80; border-radius:0;}\n  .spr-node{cursor:pointer;} .spr-node:hover rect:first-of-type{filter:brightness(.97);} .spr-node:focus{outline:none;} .spr-node:focus rect:first-of-type{stroke-width:2.5;}\n  .spr-edge{cursor:pointer; transition:opacity .15s;} .spr-edge:hover{opacity:1 !important;}\n  .spr-split{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(300px,.85fr); gap:14px; align-items:start;}\n  .spr-queue{max-height:560px; overflow:auto; border:1px solid var(--line); border-radius:8px;}\n  .spr-queue table th{position:sticky; top:0; z-index:1;}\n  .spr-row{cursor:pointer;} .spr-row:hover td{background:var(--slr-tint);} .spr-row.sel td{background:#E4F2C8;}\n  .spr-detail{position:sticky; top:10px; border:1px solid var(--line); border-radius:10px; padding:14px 16px; background:#fff;}\n  .spr-detail .field input[type=text]{width:100%;}\n  .spr-quality{display:grid; grid-template-columns:1fr 1fr; gap:14px;}\n  .spr-card{border:1px solid var(--line); border-radius:10px; padding:12px 16px; background:#fff;}\n  .spr-card h4{margin:0 0 6px; font-size:13px;}\n  .spr-checks{list-style:none; margin:0; padding:0;}\n  .spr-checks li{display:flex; justify-content:space-between; gap:12px; padding:7px 0; border-bottom:1px solid #EEEDE4; font-size:13px;}\n  .spr-checks li:last-child{border-bottom:none;}\n  .spr-count{font-weight:800; min-width:32px; text-align:right;} .spr-count.good{color:#3F6B3F;} .spr-count.warn{color:#8A6A18;} .spr-count.bad{color:var(--extreme);}\n  @media (max-width:900px){ .spr-split, .spr-quality{grid-template-columns:1fr;} .spr-detail{position:static;} }\n  .rd-tabs{display:flex; gap:4px; padding:0 32px; background:var(--paper-raised); border-bottom:1px solid var(--line);}\n  .rd-tab{font-family:var(--font-body); font-size:14px; font-weight:600; color:var(--ink-soft); background:none; border:none; border-bottom:3px solid transparent; padding:12px 16px 10px; cursor:pointer; display:inline-flex; gap:8px; align-items:center;}\n  .rd-tab:hover{color:var(--ink);}\n  .rd-tab.active{color:var(--slr-green-deep); border-bottom-color:var(--slr-green);}\n  .rd-tab-badge{font-size:11px; font-weight:700; color:#8A6A18; background:#F6E9C9; border-radius:10px; padding:1px 7px;}\n  .rd-tab-badge[hidden]{display:none;}\n  #rd-view-spr .panel{margin-top:16px;}\n  .spr-toolbar{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 12px; margin-bottom:12px; background:#F7F7F2; border:1px solid var(--line); border-radius:8px;}\n  .spr-toolbar select{max-width:175px;}\n  .spr-toolbar input[type=search]{min-width:190px; flex:0 1 240px; padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-family:var(--font-body); font-size:13px;}\n  .spr-check{display:inline-flex; gap:6px; align-items:center; font-size:13px;}\n  .spr-fig{border:1px solid var(--line); border-radius:10px; background:#fff;}\n  .spr-fig svg{display:block; width:100%; height:auto; min-width:900px;}\n  .spr-fig .spr-node{cursor:pointer; outline:none;} .spr-fig .spr-node:focus rect:first-of-type{stroke-width:2.6;}\n  .spr-fig .spr-edge{cursor:pointer; transition:opacity .12s;}\n  .spr-fig svg.hovering .spr-edge{opacity:.08 !important;} .spr-fig svg.hovering .spr-edge.hl{opacity:1 !important;}\n  .spr-detail-list{margin-top:14px; padding-top:14px; border-top:1px solid var(--line);}\n  .spr-detail-head{display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap;}\n  .spr-warn{color:#8A6A18; font-weight:700; white-space:nowrap;} .spr-okmark{color:#3F6B3F; font-weight:700;}\n  .spr-checklist{list-style:none; margin:0 0 12px; padding:0;}\n  .spr-checklist li{font-size:12.5px; padding:6px 10px 6px 28px; border-radius:6px; margin-bottom:4px; position:relative;}\n  .spr-checklist li.warn{background:#FFF9E8; color:#6B5A1E;} .spr-checklist li.bad{background:var(--extreme-bg); color:#7A2626;}\n  .spr-checklist li::before{position:absolute; left:9px; top:6px; content:\"\u26a0\";}\n  .spr-checkok{font-size:12.5px; color:#3F6B3F; background:var(--low-bg); border-radius:6px; padding:6px 10px; margin-bottom:12px;}\n  .spr-issues div{font-size:12px; margin-bottom:2px;} .spr-issues .bad{color:var(--extreme);} .spr-issues .warn{color:#6B5A1E;}\n  .spr-detail-top{display:flex; align-items:center; gap:10px; margin-bottom:4px;} .spr-detail-top h3{margin:0;}\n  .spr-asis{font-size:12.5px; margin-bottom:10px; line-height:1.45;}\n  .spr-hint{text-transform:none; letter-spacing:0; font-size:11px; color:#8A8A80;}\n  .spr-guide-lead{font-size:14px; max-width:900px; margin:0 0 14px;}\n  .spr-guide-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; margin-bottom:14px;}\n  .spr-guide-grid p{margin:0; font-size:13px; line-height:1.5; color:#3A3D35;}\n  @media (max-width:700px){ .rd-tabs{padding:0 8px;} .rd-tab{padding:10px 10px 8px;} .spr-toolbar input[type=search]{min-width:0; flex:1 1 100%;} }\n  @media print{ .rd-tabs, .spr-toolbar{display:none !important;} #rd-view-spr[hidden], #rd-view-register[hidden]{display:block !important;} }\n  #rd-help-btn{background:transparent; color:#F6F6F2; border-color:rgba(246,246,242,.55); font-weight:600; padding:9px 14px;}\n  #rd-help-btn:hover{background:rgba(255,255,255,.1); border-color:#F6F6F2;}\n  .rd-help{font-size:14px; line-height:1.5;} .rd-help-head{display:flex; align-items:center; justify-content:space-between; gap:10px;}\n  .rd-help h3{margin:0;} .rd-help h4{margin:16px 0 4px; font-size:14px; color:var(--slr-green-deep);} .rd-help ul{margin:0; padding-left:20px;} .rd-help li{margin:3px 0;}\n  .spr-id{display:inline-block; font-size:10.5px; font-weight:700; color:#6B6F63; background:#F0F0E8; border-radius:4px; padding:0 4px; margin-right:5px; vertical-align:1px;}\n  .spr-matrix{border-collapse:separate; border-spacing:0; width:auto; min-width:100%;}\n  .spr-matrix th, .spr-matrix td{border:1px solid var(--line); padding:6px 8px; vertical-align:top;}\n  .spr-matrix thead th{background:#F8EEEE; color:#7A2626; font-size:12px; text-transform:none; letter-spacing:0; min-width:120px; position:sticky; top:0;}\n  .spr-matrix tbody th{background:#EEF4F8; color:#2B4F66; font-size:12px; text-transform:none; letter-spacing:0; text-align:left; min-width:170px;}\n  .spr-matrix th.corner{background:#F7F7F2; color:var(--ink-soft); font-size:11px; min-width:170px;}\n  .spr-matrix td.empty{background:#FBFBF8;}\n  .spr-mchip{display:flex; align-items:center; gap:6px; width:100%; text-align:left; font-family:var(--font-body); font-size:12px; background:#fff; border:1.5px solid; border-radius:14px; padding:3px 9px; margin:2px 0; cursor:pointer; color:var(--ink);}\n  .spr-mchip i{display:inline-block; width:8px; height:8px; border-radius:50%; flex:none;} .spr-mchip b{margin-left:auto; font-size:11px; color:var(--ink-soft);}\n  .spr-mchip.dashed{border-style:dashed;} .spr-mchip.on{background:#EAF7C9;} .spr-mchip:hover{background:var(--slr-tint);}\n  .spr-merge-box{background:#FFF9E8; border:1px solid #E9DBA6; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:13px;}\n  .spr-merge-row{display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:5px 0; border-top:1px solid #F0E6C4;} .spr-merge-row:first-of-type{border-top:none;}\n  .spr-merge-row .btn{padding:3px 10px; font-size:12px;}\n  .spr-model-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(460px, 1fr)); gap:14px;}\n  .spr-model-head{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px;} .spr-model-head h4{margin:0;}\n  .spr-model-table{width:100%; font-size:12.5px;} .spr-model-table th{font-size:10.5px;} .spr-model-table td{padding:4px 6px; vertical-align:middle;}\n  .spr-model-table input[type=text]{width:100%; font-size:12.5px; padding:5px 7px;}\n  .spr-model-table select{font-size:12px; padding:4px; max-width:120px;}\n  .spr-model-table th:nth-child(2){width:36%;} .spr-model-table th:nth-child(3){width:38%;}\n  .spr-idcell{font-weight:700; color:#6B6F63; white-space:nowrap;} .spr-num{text-align:center;} .spr-actions{white-space:nowrap;}\n  .spr-actions .btn{padding:3px 8px; font-size:11.5px;}\n  .spr-ruled{margin-top:14px; border:1px solid var(--line); border-radius:8px; padding:8px 12px;} .spr-ruled summary{cursor:pointer; font-weight:600; font-size:13px;}\n  .spr-ruled table{margin-top:8px;}\n  .spr-quality3{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;}\n  .spr-item-select{width:100%;}\n  @media (max-width:700px){ .spr-model-grid{grid-template-columns:1fr;} }\n  .rd-ai{display:inline-block; font-size:11px; font-weight:700; border-radius:10px; padding:1px 7px; white-space:nowrap; background:#F6E9C9; color:#8A6A18; border:1px solid #E9D39B;}\n  .rd-ai.ok{background:#E4EDE0; color:#3F6B3F; border-color:#C6DABE;} .rd-ai.bad{background:#F2D4D2; color:#A73434; border-color:#E5B9B9;}\n  .rd-review-box{border:1px solid #E9D39B; background:#FFF9E8; border-radius:8px; padding:10px 12px; margin:0 0 14px; font-size:13px;}\n  .rd-review-box.ok{border-color:#C6DABE; background:#F1F7EC;} .rd-review-box.bad{border-color:#E5B9B9; background:#FBEDEC;}\n  .rd-review-box select{max-width:220px;}\n  .rd-ai-note{font-size:12.5px; background:#FFF9E8; border:1px solid #E9D39B; color:#6B5A1E; border-radius:6px; padding:6px 10px; margin-bottom:8px;}\n  #rd-approve-shown{border-color:#E9D39B; background:#FFF9E8; color:#6B5A1E; font-weight:600;}\n</style>");
+  document.body.insertAdjacentHTML("afterbegin", "<div class=\"header\">\n  <div>\n    <div class=\"eyebrow\">Framework \u00b7 Project \u00b7 Session</div>\n    <h1>Risk Assessment Dashboard</h1>\n    <div class=\"eyebrow\" id=\"header-sub\">No project loaded</div>\n  </div>\n  <button class=\"btn agent\" id=\"paste-agent-btn\" type=\"button\" title=\"Paste a code block from the Risk Assessment agent\">Paste from agent\u2026</button>\n  <button class=\"btn\" id=\"rd-save-copy\" type=\"button\" title=\"Download this dashboard as an .html file to keep and share\">Save copy</button>\n  <button class=\"btn\" id=\"rd-help-btn\" type=\"button\" title=\"How to use this dashboard\">? Help</button>\n</div>\n\n\n<div id=\"rd-notice\"></div>\n\n<div class=\"setup-bar\">\n  <label>Framework</label>\n  <select id=\"framework-select\">\n    <option value=\"mdcp\">MDCP / DMPE Risk Matrix (2025b)</option>\n    <option value=\"dwer\">DWER Works Approval Risk Framework</option>\n    <option value=\"epa-emp\">EP Act Part IV EMP (EPA WA factors)</option>\n    <option value=\"epbc-emp\">EPBC Act EMP (MNES / DCCEEW)</option>\n    <option value=\"custom\">Custom (load file)\u2026</option>\n  </select>\n  <input type=\"file\" id=\"custom-framework-file\" accept=\"application/json\" style=\"display:none;\">\n  <button class=\"btn\" id=\"download-framework-template-btn\" style=\"font-size:11.5px; padding:5px 9px;\">Example framework file \u2b07</button>\n\n  <span class=\"spacer\"></span>\n\n  <label>Project</label>\n  <input type=\"text\" id=\"project-name\" placeholder=\"Project name\" style=\"width:220px;\">\n  <button class=\"btn\" id=\"new-project-btn\">New project</button>\n  <button class=\"btn\" id=\"load-session-btn\">Load data (.json)\u2026</button>\n  <input type=\"file\" id=\"load-session-file\" accept=\"application/json\" style=\"display:none;\">\n  <button class=\"btn\" id=\"save-session-btn\">Save data (.json)</button>\n\n  <span class=\"spacer\"></span>\n\n  <div style=\"position:relative;\">\n    <button class=\"btn\" id=\"export-menu-btn\" aria-label=\"Export options\" aria-haspopup=\"true\">Export \u25be</button>\n    <div class=\"export-menu\" id=\"export-menu\">\n      <button class=\"btn export-menu-item\" id=\"export-flat-btn\">Excel: this register</button>\n      <button class=\"btn export-menu-item\" id=\"rd-export-all-btn\">Excel: all registers in this project</button>\n      <button class=\"btn export-menu-item\" id=\"rd-export-png-btn\">Image: this register (PNG)</button>\n      <button class=\"btn export-menu-item hidden\" id=\"export-mdcp-btn\">Export to MDCP template\u2026</button>\n      <button class=\"btn export-menu-item hidden\" id=\"export-csm-btn\">Export to CSM spreadsheet</button>\n    </div>\n  </div>\n  <input type=\"file\" id=\"mdcp-template-file\" accept=\".xlsx\" style=\"display:none;\">\n</div>\n\n<div class=\"assess-bar\" id=\"assess-bar\"></div>\n\n<div class=\"rd-tabs\" role=\"tablist\"><button class=\"rd-tab active\" type=\"button\" role=\"tab\" aria-selected=\"true\" data-view=\"register\">Risk register <span class=\"rd-tab-badge\" id=\"rd-tab-reg-count\" hidden></span></button><button class=\"rd-tab\" type=\"button\" role=\"tab\" aria-selected=\"false\" data-view=\"spr\">SPR model <span class=\"rd-tab-badge\" id=\"rd-tab-spr-count\" hidden></span></button></div>\n<div id=\"rd-view-register\">\n<div class=\"panel\">\n  <div class=\"panel-head\">\n    <h2>Risk rating matrix</h2>\n    <span class=\"panel-sub\" id=\"matrix-sub\"></span>\n    <span class=\"spacer\"></span>\n    <div class=\"chip-row\">\n      <span class=\"chip active\" data-view=\"inh\" id=\"view-inh\">Inherent</span>\n      <span class=\"chip\" data-view=\"res\" id=\"view-res\">Residual</span>\n    </div>\n  </div>\n  <div class=\"panel-body\">\n    <div id=\"filter-controls\"></div>\n    <div id=\"active-filters-bar\"></div>\n    <div id=\"stat-cards\"></div>\n    <div id=\"matrix-body\"></div>\n  </div>\n</div>\n\n<div class=\"panel\">\n  <div class=\"panel-head\">\n    <h2>Risk register</h2>\n    <span class=\"panel-sub\" id=\"register-sub\"></span>\n    <span class=\"spacer\"></span>\n    <button class=\"btn hidden\" id=\"outcome-lib-btn\" type=\"button\">Outcome library\u2026</button>\n    <span class=\"chip hidden\" id=\"review-filter-chip\">\u26a0 Needs review</span>\n    <span class=\"chip hidden\" id=\"rd-approval-chip\">Needs approval</span>\n    <button class=\"btn hidden\" id=\"rd-approve-shown\" type=\"button\">Approve shown\u2026</button>\n    <span class=\"chip\" id=\"flag-filter-chip\">\ud83d\udea9 Flagged only</span>\n    <span class=\"chip\" id=\"archived-filter-chip\">\ud83d\uddc4 Show archived</span>\n    <button class=\"btn primary\" id=\"add-risk-btn\">+ Add risk</button>\n  </div>\n  <div class=\"panel-body\" id=\"register-body\"></div>\n</div>\n\n</div>\n<div id=\"rd-view-spr\" hidden>\n<div class=\"panel\">\n  <div class=\"panel-head\">\n    <h2>Source\u2013pathway\u2013receptor model</h2>\n    <span class=\"spacer\"></span>\n    <div class=\"chip-row\">\n      <span class=\"chip active\" data-tab=\"spr\" id=\"tab-spr\">Figure</span>\n      <span class=\"chip\" data-tab=\"matrix\" id=\"tab-matrix\">Matrix</span>\n      <span class=\"chip\" data-tab=\"review\" id=\"tab-review\">Linkages</span>\n      <span class=\"chip\" data-tab=\"model\" id=\"tab-model\">Model</span>\n      <span class=\"chip\" data-tab=\"quality\" id=\"tab-quality\">Checks</span>\n      <span class=\"chip\" data-tab=\"guide\" id=\"tab-guide\">Guidance</span>\n    </div>\n    <button class=\"btn hidden\" id=\"auto-detect-themes-btn\" title=\"Group risks that share the same (or nearly the same) Source / Pathway / Receptor phrase\">\u2728 Group by phrase</button>\n    <button class=\"btn hidden\" id=\"manage-themes-btn\">Manage groups\u2026</button>\n  </div>\n  <div class=\"panel-body\" id=\"pathway-analysis-body\"></div>\n</div>\n\n</div>\n\n<footer id=\"footer-note\"></footer>\n\n<div class=\"drawer-overlay\" id=\"overlay\">\n  <div class=\"drawer\" id=\"drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Edit risk\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"theme-overlay\">\n  <div class=\"drawer\" id=\"theme-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Manage pathway themes\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"outcome-overlay\" style=\"z-index:60;\">\n  <div class=\"drawer wide\" id=\"outcome-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Outcome library\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"transfer-overlay\">\n  <div class=\"drawer wide\" id=\"transfer-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Transfer risks\"></div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"paste-overlay\">\n  <div class=\"drawer wide\" id=\"paste-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Paste from agent\">\n    <h3>Paste risks from the agent</h3>\n    <p class=\"panel-sub\" style=\"margin-top:-6px;\">Paste a code block from the Risk Assessment agent: a batch of extra risks, or a whole dashboard. Ratings are re-checked against the framework matrix as they load.</p>\n    <div class=\"field\">\n      <label for=\"paste-text\">Agent output</label>\n      <textarea id=\"paste-text\" spellcheck=\"false\" style=\"min-height:42vh; font-family:Consolas,Menlo,monospace; font-size:12.5px;\" placeholder='{ \"formatVersion\": 2, ... }'></textarea>\n    </div>\n    <label class=\"check-line\"><input type=\"radio\" name=\"paste-mode\" value=\"replace\" checked> Replace what's open (new project or updated register)</label>\n    <label class=\"check-line\"><input type=\"radio\" name=\"paste-mode\" value=\"add\"> Add to what's open (extra batch of risks)</label>\n    <div id=\"paste-error\" class=\"transfer-box hidden\" role=\"alert\"></div>\n    <div class=\"drawer-actions\">\n      <button class=\"btn primary\" id=\"paste-go\" type=\"button\">Load into dashboard</button>\n      <button class=\"btn\" id=\"paste-cancel\" type=\"button\">Cancel</button>\n    </div>\n  </div>\n</div>\n\n<div class=\"drawer-overlay\" id=\"domain-overlay\">\n  <div class=\"drawer\" id=\"domain-drawer\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Manage domains\"></div>\n</div>\n<div class=\"drawer-overlay\" id=\"rd-help-overlay\" style=\"z-index:70;\">\n  <div class=\"drawer wide\" id=\"rd-help\" role=\"dialog\" aria-modal=\"true\" aria-label=\"Help\"></div>\n</div>");
   var boot = document.getElementById("boot"); if(boot) boot.remove();
 })();
 
@@ -1032,7 +1032,7 @@ function passesBase(r){
   if(filters.search){
     const s = filters.search.toLowerCase();
     const hay = [String(r.id), richHtmlToPlainText(r.source), richHtmlToPlainText(r.pathway), richHtmlToPlainText(r.receptor),
-      r.factor||"", r.indicator||"", r.receptorCategory||""].join(" ").toLowerCase();
+      r.factor||"", r.indicator||"", r.receptorCategory||"", r.sourceGroup||"", r.pathwayGroup||"", r.receptorGroup||"", r.impact||""].join(" ").toLowerCase();
     if(!hay.includes(s)) return false;
   }
   return true;
@@ -1249,13 +1249,7 @@ document.getElementById("view-res").addEventListener("click", ()=>{ viewMode="re
   document.getElementById("view-res").classList.add("active"); document.getElementById("view-inh").classList.remove("active");
   renderAll(); });
 
-["gap","spr","net"].forEach(tab=>{
-  document.getElementById("tab-"+tab).addEventListener("click", ()=>{
-    pathwayTab = tab; themeFilter = null;
-    ["gap","spr","net"].forEach(t=>document.getElementById("tab-"+t).classList.toggle("active", t===tab));
-    renderPathwayAnalysis(); renderRegister();
-  });
-});
+/* SPR sub-tab listeners live in the SPR module */
 
 /* =========================================================================
    DRAWER (add / edit risk)
@@ -1438,10 +1432,7 @@ function openDrawer(id){
       if(c.kind==="outcomes") r.outcomeCodes = readOutcomePicker();
       else r[c.key] = document.getElementById("f-extra-"+c.key).value;
     });
-    SPR_ROLES.forEach(role=>{
-      const sel = document.getElementById("f-group-"+role);
-      if(sel && sel.value !== explicitThemeFor(r, role)) setExplicitTheme(r, role, sel.value);
-    });
+    rdReadSprFields(r);
     const reviewed = document.getElementById("f-reviewed");
     if(reviewed && reviewed.checked){ r._needsReview = false; if(r._transfer) r._transfer.reviewedAt = new Date().toISOString(); }
     if(isNew) RISKS.push(r);
@@ -1739,6 +1730,10 @@ function mapRiskToFramework(r, fromFw, toFw){
   const out = {
     linkId: r.linkId,
     source: r.source, pathway: r.pathway, receptor: r.receptor, treatment: r.treatment, comments: r.comments,
+    sourceGroup: r.sourceGroup, pathwayGroup: r.pathwayGroup, receptorGroup: r.receptorGroup, impact: r.impact,
+    relationshipStatus: r.relationshipStatus, confidence: r.confidence, reviewStatus: r.reviewStatus, evidenceReference: r.evidenceReference, controlPoint: r.controlPoint,
+    sprIds: r.sprIds ? Object.assign({}, r.sprIds) : undefined, origin: r.origin, riskStatus: r.riskStatus, riskApprovedBy: r.riskApprovedBy, riskApprovedAt: r.riskApprovedAt,
+    sprOrigin: r.sprOrigin, sprApprovedBy: r.sprApprovedBy, sprApprovedAt: r.sprApprovedAt,
     _flagged: !!r._flagged, _needsReview: true
   };
   const tax = suggestTaxonomy(r, toFw);
@@ -2883,8 +2878,8 @@ async function buildMdcpTemplateExport(templateArrayBuffer, risks){
   const templateRowEl = rowByNum.get(lastTemplateRow);
 
   const sortedRisks = [...risks].sort((a,b)=>a.id-b.id);
-  const prebuiltRisks = sortedRisks.filter(r=>r.id <= lastPrebuiltId);
-  const overflowRisks = sortedRisks.filter(r=>r.id > lastPrebuiltId);
+  const prebuiltRisks = sortedRisks.slice(0, lastPrebuiltId);
+  const overflowRisks = sortedRisks.slice(lastPrebuiltId);
   const newRowsNeeded = overflowRisks.length;
 
   if(newRowsNeeded > 0){
@@ -2926,7 +2921,7 @@ async function buildMdcpTemplateExport(templateArrayBuffer, risks){
   }
 
   function targetRowFor(risk){
-    if(risk.id <= lastPrebuiltId) return firstDataRow + (risk.id - 1);
+    if(prebuiltRisks.includes(risk)) return firstDataRow + prebuiltRisks.indexOf(risk);
     return lastTemplateRow + 1 + overflowRisks.indexOf(risk);
   }
   function writeRiskIntoRow(risk, rowNum){
@@ -2958,9 +2953,9 @@ async function buildMdcpTemplateExport(templateArrayBuffer, risks){
     mdcpClearFormulaCache(rowEl, "I", rowNum);
     mdcpClearFormulaCache(rowEl, "M", rowNum);
   }
-  for(let id=1; id<=lastPrebuiltId; id++){
-    const rn = firstDataRow + id - 1;
-    const risk = prebuiltRisks.find(r=>r.id===id);
+  for(let i=0; i<lastPrebuiltId; i++){
+    const rn = firstDataRow + i;
+    const risk = prebuiltRisks[i];
     if(risk) writeRiskIntoRow(risk, rn); else blankRow(rn);
   }
   overflowRisks.forEach((risk)=> writeRiskIntoRow(risk, targetRowFor(risk)));
@@ -2980,8 +2975,7 @@ async function buildMdcpTemplateExport(templateArrayBuffer, risks){
     const updatedExisting = shapes.map(s=>{
       const excelRow = s.anchor[2]+1;
       if(excelRow < firstDataRow || excelRow > lastTemplateRow) return s.raw;
-      const riskId = excelRow - firstDataRow + 1;
-      const risk = prebuiltRisks.find(r=>r.id===riskId);
+      const risk = prebuiltRisks[excelRow - firstDataRow];
       return mdcpSetCheckedInBlock(s.raw, risk ? (risk.phases||[]).includes(s.label) : false);
     });
     const templateCheckboxes = shapes.filter(s=> (s.anchor[2]+1) === lastTemplateRow);
@@ -3075,33 +3069,7 @@ async function buildMdcpTemplateExport(templateArrayBuffer, risks){
    EXPORTS
    ========================================================================= */
 
-document.getElementById("export-flat-btn").addEventListener("click", ()=>{
-  const fw = activeFramework;
-  const taxHeaders = fw.taxonomyType==="factor-indicator" ? [taxLabels().top, taxLabels().sub, ...(fw.domainsEnabled?["Domains"]:[])] : ["Receptor category"];
-  const phaseHeader = fw.phasesEnabled ? ["Phases"] : [];
-  const extraHeaders = extraColumns(fw).map(c=>c.label);
-  const commentsHeader = fw.showComments !== false ? ["Comments"] : [];
-  const headers = ["ID", "Flagged", ...taxHeaders, "Source","Pathway","Receptor", ...phaseHeader, "Inh. Consequence","Inh. Likelihood","Inh. Rating",
-    "Treatment / Controls","Res. Consequence","Res. Likelihood","Res. Rating", ...commentsHeader, ...extraHeaders, "Last edited"];
-  const rows = [headers];
-  RISKS.filter(r=>!r._archived).forEach(r=>{
-    const taxVals = fw.taxonomyType==="factor-indicator" ? [r.factor||"", r.indicator||"", ...(fw.domainsEnabled?[(r.domains||[]).join(", ")]:[])] : [r.receptorCategory||""];
-    const phaseVals = fw.phasesEnabled ? [(r.phases||[]).join(", ")] : [];
-    const extraVals = extraColumns(fw).map(c=> c.kind==="outcomes" ? c.full(r) : c.plain(r));
-    const commentsVal = fw.showComments !== false ? [r.comments||""] : [];
-    rows.push([r.id, r._flagged ? "Yes" : "", ...taxVals, richHtmlToPlainText(r.source), richHtmlToPlainText(r.pathway), richHtmlToPlainText(r.receptor), ...phaseVals, r.inhCons||"", r.inhLike||"", r.inhRating||"",
-      richHtmlToPlainText(r.treatment), r.resCons||"", r.resLike||"", r.resRating||"", ...commentsVal, ...extraVals, formatTimestamp(r._lastEditedAt)]);
-  });
-  const inhRatingCol = headers.indexOf("Inh. Rating"), resRatingCol = headers.indexOf("Res. Rating");
-  const styleFor = (r,c)=>{
-    if(r===0) return 1;
-    if(c===inhRatingCol) return ratingStyleId(rows[r][inhRatingCol]);
-    if(c===resRatingCol) return ratingStyleId(rows[r][resRatingCol]);
-    return 0;
-  };
-  const bytes = buildWorkbook([{name:"Risk register", rows, styleFor, colCount: headers.length}]);
-  downloadWorkbook(bytes, `${(project.name||"risk_register").replace(/[^a-z0-9]+/gi,"_")}_export.xlsx`);
-});
+/* Register Excel export lives in the review and export module */
 
 document.getElementById("export-mdcp-btn").addEventListener("click", ()=> document.getElementById("mdcp-template-file").click());
 document.getElementById("mdcp-template-file").addEventListener("change", async (e)=>{
@@ -3109,7 +3077,7 @@ document.getElementById("mdcp-template-file").addEventListener("change", async (
   if(!file) return;
   try{
     const buf = await file.arrayBuffer();
-    const { bytes, summary } = await buildMdcpTemplateExport(buf, RISKS.filter(r=>!r._archived));
+    const { bytes, summary } = await buildMdcpTemplateExport(buf, rdExportRisks());
     downloadWorkbook(bytes, file.name.replace(/\.xlsx$/i, "") + "_updated.xlsx");
     let msg = `Wrote ${summary.totalRisks} risk${summary.totalRisks===1?"":"s"} into the template \u2014 ${summary.intoExistingRows} into existing rows`;
     if(summary.newRowsAdded) msg += `, ${summary.newRowsAdded} new row${summary.newRowsAdded===1?"":"s"} added`;
@@ -3130,7 +3098,7 @@ document.getElementById("export-csm-btn").addEventListener("click", ()=>{
     "Inh. Consequence","Inh. Likelihood","Inh. Rating","Controls / Treatment",
     "Res. Consequence","Res. Likelihood","Res. Rating","Acceptability","Comments","Last edited"];
   const rows = [headers];
-  RISKS.filter(r=>!r._archived).forEach(r=>{
+  rdExportRisks().forEach(r=>{
     rows.push([r.id, r._flagged ? "Yes" : "", richHtmlToPlainText(r.source), richHtmlToPlainText(r.pathway), richHtmlToPlainText(r.receptor), r.receptorCategory||"",
       ...(fw.phasesEnabled ? [(r.phases||[]).join(", ")] : []),
       r.inhCons||"", r.inhLike||"", r.inhRating||"", richHtmlToPlainText(r.treatment),
@@ -3554,6 +3522,1330 @@ function rdLoadEmbedded(){
     renderHeader();
   }catch(e){ rdNotice("Could not load the data in this file: " + e.message); }
 }
+
+
+/* =========================================================================
+   SPR MODEL
+   The project has ONE source-pathway-receptor model: a short list of
+   sources, pathways, receptors and impacts (project.sprModel). Each risk is
+   a linkage that points at one item of each (r.sprIds). Items appear once in
+   the figure however many risks use them, so nothing is duplicated.
+   Older files and agent output that only carry text labels are converted
+   into model items on load, matching labels that differ only by case or
+   punctuation. Near-duplicates can then be merged in the Model tab.
+   ========================================================================= */
+const SPR_ALL = ["source","pathway","receptor","impact"];
+const SPR_LABEL = {source:"Source", pathway:"Pathway", receptor:"Receptor", impact:"Impact"};
+const SPR_PLURAL = {source:"Sources", pathway:"Pathways", receptor:"Receptors", impact:"Impacts"};
+const SPR_DESC = {source:"What causes harm", pathway:"How it reaches the receptor", receptor:"What could be harmed", impact:"The adverse effect"};
+const SPR_NOTE_HINT = {source:"What is released, and from where", pathway:"Mechanism and medium", receptor:"Value, sensitivity and distance", impact:"What changes for the receptor"};
+const SPR_FIELD = {source:"sourceGroup", pathway:"pathwayGroup", receptor:"receptorGroup", impact:"impact"};
+const SPR_LIST = {source:"sources", pathway:"pathways", receptor:"receptors", impact:"impacts"};
+const SPR_PREFIX = {source:"S", pathway:"P", receptor:"R", impact:"I"};
+const SPR_REL = ["Explicit","Derived","Assumed"];
+const SPR_CONF = ["High","Medium","Low"];
+const SPR_REVIEW = ["Draft","Approved","Rework required"];
+const SPR_CONTROL = ["Source","Pathway","Receptor","Several"];
+const SPR_COL = {
+  source:{band:"#EEF4F8", stroke:"#3C6E8F"}, pathway:{band:"#EFF5EC", stroke:"#4F7942"},
+  receptor:{band:"#F8EEEE", stroke:"#A73434"}, impact:{band:"#F8F2E6", stroke:"#8A6A18"}
+};
+const SPR_RCOL = {Low:"#5C8A5C", Medium:"#C99A2E", High:"#C4652B", Extreme:"#A73434"};
+const SPR_GENERIC = new Set(["siteactivity","directexposure","environment","environmentalharm","environmentalvalues","environmentalreceptors",
+  "controlfailure","impact","impacts","various","other","general","na","tbc","tbd","unknown","receptor","source","pathway"]);
+const SPR_STOP = new Set("the a an of and or to in on at from for with by near via into onto as its their site project area areas".split(" "));
+let sprF = {tax:"All", phase:"", review:"all", q:""};
+let sprShowImpact = true;
+let sprQueueStatus = "all";
+let sprSelectedId = null;
+let sprSel = null;
+let sprDismissed = new Set();
+let sprPendingModel = null;
+let sprPendingIsAgent = false;
+const RISK_REVIEW = ["Needs review","Approved","Rework required"];
+function rdReviewer(){
+  let v = "";
+  try{ v = localStorage.getItem("rdReviewerInitials") || ""; }catch(e){}
+  if(!v){
+    v = String(prompt("Your initials, for the approval record:") || "").trim().slice(0,12);
+    if(v){ try{ localStorage.setItem("rdReviewerInitials", v); }catch(e){} }
+  }
+  return v;
+}
+function rdStamp(){ return new Date().toISOString(); }
+function rdFmtDate(iso){ if(!iso) return ""; const d = new Date(iso); return isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, {day:"numeric", month:"short", year:"numeric"}); }
+function rdNeedsApproval(r){ return r.origin==="AI" && r.riskStatus!=="Approved"; }
+function sprNeedsApproval(r){ return r.sprOrigin==="AI" && r.reviewStatus!=="Approved"; }
+function rdApproveRisk(r, who){ r.riskStatus = "Approved"; r.riskApprovedBy = who; r.riskApprovedAt = rdStamp(); r._lastEditedAt = rdStamp(); }
+function rdApproveLink(r, who){ r.reviewStatus = "Approved"; r.sprApprovedBy = who; r.sprApprovedAt = rdStamp(); r._lastEditedAt = rdStamp(); }
+function rdAiTag(kind, r){
+  const ai = kind==="risk" ? r.origin==="AI" : r.sprOrigin==="AI";
+  if(!ai) return "";
+  const st = kind==="risk" ? r.riskStatus : r.reviewStatus;
+  const by = kind==="risk" ? r.riskApprovedBy : r.sprApprovedBy, at = kind==="risk" ? r.riskApprovedAt : r.sprApprovedAt;
+  if(st==="Approved") return `<span class="rd-ai ok" title="AI-generated. Approved${by?" by "+sprX(by):""}${at?" on "+rdFmtDate(at):""}.">AI \u2713</span>`;
+  if(st==="Rework required") return `<span class="rd-ai bad" title="AI-generated. Marked for rework.">AI \u00b7 rework</span>`;
+  return `<span class="rd-ai" title="AI-generated. Needs review and approval.">AI \u00b7 review</span>`;
+}
+let rdView = "register";
+let rdShowNeedsApproval = false;
+pathwayTab = "spr";
+
+function sprX(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function sprKey(v){ return pasteNorm(v); }
+function sprHighest(list, key){
+  return list.map(r=>r[key]).filter(Boolean).sort((a,b)=>RATING_ORDER.indexOf(b)-RATING_ORDER.indexOf(a))[0] || "";
+}
+function sprBadge(status){
+  const cls = status==="Approved" ? "spr-ok" : status==="Rework required" ? "spr-bad" : "spr-draft";
+  return `<span class="spr-badge ${cls}">${sprX(status||"Draft")}</span>`;
+}
+function sprRatingPill(v){ return v ? `<span class="rating ${v}">${v}</span>` : "\u2014"; }
+function rdRenderContext(){ const el = document.getElementById("rd-context"); if(el) el.innerHTML = ""; }
+
+/* ---- The model ---- */
+function sprModel(){
+  if(!project.sprModel || typeof project.sprModel !== "object" || Array.isArray(project.sprModel)) project.sprModel = {};
+  const m = project.sprModel;
+  ["sources","pathways","receptors","impacts","ruledOut"].forEach(k=>{ if(!Array.isArray(m[k])) m[k] = []; });
+  return m;
+}
+function sprItems(role){ return sprModel()[SPR_LIST[role]]; }
+function sprItem(role, id){ return sprItems(role).find(x=>x.id===id); }
+function sprNewId(role){
+  const n = sprItems(role).reduce((m,x)=>{ const k = parseInt(String(x.id).replace(/^\D+/,""),10); return isNaN(k) ? m : Math.max(m,k); }, 0) + 1;
+  return SPR_PREFIX[role] + n;
+}
+function sprFindOrCreate(role, label){
+  const clean = String(label==null?"":label).trim().slice(0,60);
+  const k = sprKey(clean); if(!k) return "";
+  let it = sprItems(role).find(x=>sprKey(x.label)===k);
+  if(!it){ it = {id:sprNewId(role), label:clean, note:""}; sprItems(role).push(it); }
+  return it.id;
+}
+function sprIdOf(r, role){ return (r.sprIds && r.sprIds[role]) || ""; }
+function sprGroupOf(r, role){
+  const it = sprItem(role, sprIdOf(r, role));
+  return it ? it.label : String(r[SPR_FIELD[role]]==null ? "" : r[SPR_FIELD[role]]).trim();
+}
+function sprAllProjectRisks(){
+  stashActive();
+  const out = []; const seen = new Set();
+  Object.values(ASSESSMENTS).forEach(a=>(a.risks||[]).forEach(r=>{ if(!seen.has(r)){ seen.add(r); out.push(r); } }));
+  return out;
+}
+function sprUsage(role, id){ return sprAllProjectRisks().filter(r=>!r._archived && sprIdOf(r, role)===id).length; }
+
+/* ---- Suggested items when a risk has none (always marked Derived) ---- */
+function sprClassify(r){
+  const txt = k => richHtmlToPlainText(r[k]||"").toLowerCase();
+  const own = {source: txt("source"), pathway: txt("pathway"), receptor: txt("receptor")};
+  const spr = [own.source, own.pathway, own.receptor].join(" ");
+  const tax = [r.factor, r.indicator, r.receptorCategory].filter(Boolean).join(" ").toLowerCase();
+  const pick = (rules, texts, fallback)=>{ for(const t of texts){ if(!t) continue; const hit = rules.find(([re])=>re.test(t)); if(hit) return hit[1]; } return fallback; };
+  const SRC = [[/generator|power station|exhaust/, "Power generation"], [/hydrocarbon|fuel|diesel|oil|chemical|reagent|cyanide/, "Chemical or hydrocarbon storage"],
+    [/tailings|tsf/, "Tailings storage"], [/dewater|borefield|abstraction|pumping/, "Groundwater abstraction"], [/clearing|vegetation removal/, "Vegetation clearing"],
+    [/waste rock|landform|wrl|stockpile/, "Waste rock and stockpiles"], [/pit|excavat|earthwork|ground disturbance/, "Excavation and earthworks"],
+    [/vehicle|traffic|haul|road/, "Vehicle movements"], [/storm|flood|rain/, "Stormwater and rainfall"], [/camp|wastewater|sewage|landfill/, "Camp and waste facilities"]];
+  const PATH = [[/runoff|stormwater|overland|sediment/, "Surface runoff"], [/seepage|infiltrat|leach/, "Seepage to groundwater"],
+    [/drawdown|abstraction|dewater/, "Groundwater drawdown"], [/dust|airborne|emission|exhaust/, "Air emissions and dust"],
+    [/strike|collision/, "Vehicle strike"], [/entrap|fall/, "Entrapment"], [/spill|release|leak|loss of containment/, "Spill or loss of containment"],
+    [/clearing|removal/, "Direct removal"], [/erosion|gully|rill/, "Erosion"], [/flow|diversion|shadow/, "Altered surface flow"]];
+  const REC = [[/groundwater|aquifer|bore/, "Groundwater"], [/surface water|creek|lake|wetland|drainage line|river/, "Surface water"],
+    [/fauna|malleefowl|bird|animal|reptile|mammal/, "Native fauna"], [/flora|vegetation|mulga|woodland|plant/, "Native vegetation"],
+    [/topsoil|soil|land/, "Soil"], [/people|community|resident|public|homestead|town/, "People and community"]];
+  const IMP = [[/contaminat|quality|leach|acid|saline|pollut/, "Contamination"], [/removal|clearing|habitat|loss/, "Habitat or vegetation loss"],
+    [/death|injur|strike|entrap/, "Injury or death"], [/drawdown|flow|hydrolog/, "Altered hydrology"], [/erosion|stability|collapse/, "Landform instability"]];
+  return {
+    source: pick(SRC, [own.source, spr, tax], "Site activity"),
+    pathway: pick(PATH, [own.pathway, spr], "Direct exposure"),
+    receptor: pick(REC, [own.receptor, tax], "Environment"),
+    impact: pick(IMP, [own.receptor + " " + own.pathway, spr, tax], "Environmental harm")
+  };
+}
+function rdEnsureSprRisk(r){
+  if(!r.sprIds || typeof r.sprIds !== "object" || Array.isArray(r.sprIds)) r.sprIds = {};
+  let suggested = null;
+  SPR_ALL.forEach(role=>{
+    if(sprItem(role, r.sprIds[role])) return;
+    let label = String(r[SPR_FIELD[role]]==null ? "" : r[SPR_FIELD[role]]).trim();
+    if(!label && role!=="impact"){
+      const t = (((project && project.themes) || {})[role] || []).find(t=>(t.members||[]).includes(r.linkId));
+      if(t && t.label) label = t.label;
+    }
+    if(!label){
+      suggested = suggested || sprClassify(r);
+      label = suggested[role];
+      if(!r.relationshipStatus) r.relationshipStatus = "Derived";
+    }
+    r.sprIds[role] = sprFindOrCreate(role, label);
+  });
+  SPR_ALL.forEach(role=>{ const it = sprItem(role, r.sprIds[role]); if(it) r[SPR_FIELD[role]] = it.label; });
+  if(!SPR_REL.includes(r.relationshipStatus)) r.relationshipStatus = r._flagged ? "Assumed" : "Derived";
+  if(!SPR_CONF.includes(r.confidence)) r.confidence = r._flagged ? "Low" : "Medium";
+  if(!SPR_REVIEW.includes(r.reviewStatus)) r.reviewStatus = "Draft";
+  if(typeof r.evidenceReference !== "string") r.evidenceReference = "";
+  if(r.controlPoint && !SPR_CONTROL.includes(r.controlPoint)){ const m = pasteMatch(r.controlPoint, SPR_CONTROL); r.controlPoint = m || ""; }
+  if(r.controlPoint==null) r.controlPoint = "";
+  if(r.origin!=="AI" && r.origin!=="Manual") r.origin = "Manual";
+  if(r.origin==="AI"){ if(!RISK_REVIEW.includes(r.riskStatus)) r.riskStatus = "Needs review"; }
+  else if(r.riskStatus && !RISK_REVIEW.includes(r.riskStatus)) r.riskStatus = "";
+  if(r.sprOrigin!=="AI" && r.sprOrigin!=="Manual") r.sprOrigin = r.origin;
+}
+function rdEnsureSpr(){
+  const m = sprModel();
+  SPR_ALL.forEach(role=>{
+    const seen = new Set();
+    m[SPR_LIST[role]] = m[SPR_LIST[role]].filter(it=>it && String(it.label||"").trim()).map(it=>{
+      it.label = String(it.label).trim().slice(0,60); it.note = String(it.note||"").trim().slice(0,200);
+      if(!it.id || seen.has(it.id)) it.id = SPR_PREFIX[role] + "x" + Math.random().toString(36).slice(2,6);
+      seen.add(it.id); return it;
+    });
+  });
+  (RISKS||[]).forEach(rdEnsureSprRisk);
+  Object.values(ASSESSMENTS||{}).forEach(a=>(a.risks||[]).forEach(rdEnsureSprRisk));
+}
+// Agent output: merge its SPR model into the project, then point each risk at the merged items.
+const __rdApplyAgentPaste = applyAgentPaste;
+applyAgentPaste = function(text, mode){
+  try{
+    const d = parseAgentJson(text);
+    sprPendingModel = (d && !Array.isArray(d) && d.sprModel && typeof d.sprModel==="object") ? d.sprModel : null;
+    sprPendingIsAgent = Array.isArray(d) || !(d && (d.formatVersion || d.assessments));
+  }catch(e){ sprPendingModel = null; sprPendingIsAgent = false; }
+  try{ return __rdApplyAgentPaste.apply(this, arguments); }
+  finally{ sprPendingModel = null; sprPendingIsAgent = false; }
+};
+function rdApplyShortThemes(risks){
+  const idMap = {source:{}, pathway:{}, receptor:{}, impact:{}};
+  const pm = sprPendingModel;
+  if(pm){
+    SPR_ALL.forEach(role=>{
+      (Array.isArray(pm[SPR_LIST[role]]) ? pm[SPR_LIST[role]] : []).forEach(it=>{
+        if(!it || !String(it.label||"").trim()) return;
+        const id = sprFindOrCreate(role, it.label);
+        const item = sprItem(role, id);
+        if(it.note && !item.note) item.note = String(it.note).trim().slice(0,200);
+        if(it.id!=null) idMap[role][String(it.id).trim().toUpperCase()] = id;
+      });
+    });
+    (Array.isArray(pm.ruledOut) ? pm.ruledOut : []).forEach(x=>{
+      if(!x) return;
+      const map = (role, v)=> v==null ? "" : (idMap[role][String(v).trim().toUpperCase()] || "");
+      const row = {source: map("source", x.sourceId||x.source), pathway: map("pathway", x.pathwayId||x.pathway), receptor: map("receptor", x.receptorId||x.receptor), reason: String(x.reason||"").trim().slice(0,300)};
+      if(row.source || row.receptor) sprModel().ruledOut.push(row);
+    });
+  }
+  (risks||[]).forEach(r=>{
+    if(!r.sprIds || typeof r.sprIds!=="object") r.sprIds = {};
+    SPR_ALL.forEach(role=>{
+      const raw = r[role+"Id"]; delete r[role+"Id"];
+      const short = String(r[role+"Short"]==null ? "" : r[role+"Short"]).trim(); delete r[role+"Short"];
+      const mapped = raw!=null ? idMap[role][String(raw).trim().toUpperCase()] : "";
+      if(mapped) r.sprIds[role] = mapped;
+      else if(raw!=null && sprItem(role, String(raw).trim().toUpperCase())) r.sprIds[role] = String(raw).trim().toUpperCase();
+      else if(short) r.sprIds[role] = sprFindOrCreate(role, short);
+      else if(String(r[SPR_FIELD[role]]||"").trim()) r.sprIds[role] = sprFindOrCreate(role, r[SPR_FIELD[role]]);
+    });
+    if(!r.relationshipStatus) r.relationshipStatus = r._flagged ? "Assumed" : "Derived";
+    if(!r.confidence) r.confidence = r._flagged ? "Low" : "Medium";
+    if(!r.reviewStatus) r.reviewStatus = "Draft";
+    if(sprPendingIsAgent){
+      // Everything the agent writes is a draft until a person approves it.
+      r.origin = "AI"; r.riskStatus = "Needs review"; r.sprOrigin = "AI"; r.reviewStatus = "Draft";
+      ["riskApprovedBy","riskApprovedAt","sprApprovedBy","sprApprovedAt"].forEach(k=>{ delete r[k]; });
+    }
+  });
+}
+function themesForRole(r, role){ const id = sprIdOf(r, role); return id ? [id] : []; }
+function explicitThemeFor(r, role){ return sprIdOf(r, role); }
+function setExplicitTheme(r, role, value){ if(!r.sprIds) r.sprIds = {}; r.sprIds[role] = value; }
+function sprGroups(role, list){
+  const m = new Map();
+  list.forEach(r=>{
+    const id = sprIdOf(r, role); if(!id) return;
+    let n = m.get(id);
+    if(!n){ const it = sprItem(role, id); n = {id, label: it ? it.label : id, note: it ? it.note : "", risks:[]}; m.set(id, n); }
+    n.risks.push(r);
+  });
+  return [...m.values()];
+}
+function sprMerge(role, fromId, intoId){
+  if(!fromId || !intoId || fromId===intoId) return 0;
+  let n = 0; const now = new Date().toISOString();
+  sprAllProjectRisks().forEach(r=>{ if(sprIdOf(r, role)===fromId){ r.sprIds[role] = intoId; r._lastEditedAt = now; n++; } });
+  sprModel().ruledOut.forEach(x=>{ if(x[role]===fromId) x[role] = intoId; });
+  const from = sprItem(role, fromId), into = sprItem(role, intoId);
+  if(from && into && from.note && !into.note) into.note = from.note;
+  sprModel()[SPR_LIST[role]] = sprItems(role).filter(x=>x.id!==fromId);
+  return n;
+}
+function sprTokens(label){
+  return new Set((String(label).toLowerCase().match(/[a-z0-9]+/g)||[]).filter(w=>!SPR_STOP.has(w)).map(w=>w.length>3 ? w.replace(/(ies)$/,"y").replace(/s$/,"") : w));
+}
+function sprSuggestedMerges(){
+  const out = [];
+  SPR_ALL.forEach(role=>{
+    const items = sprItems(role).map(it=>({it, t:sprTokens(it.label), k:sprKey(it.label), n:sprUsage(role, it.id)}));
+    for(let i=0; i<items.length; i++) for(let j=i+1; j<items.length; j++){
+      const a = items[i], b = items[j];
+      const inter = [...a.t].filter(x=>b.t.has(x)).length, union = new Set([...a.t, ...b.t]).size;
+      const small = a.t.size <= b.t.size ? a.t : b.t, big = small===a.t ? b.t : a.t;
+      const subset = small.size > 0 && [...small].every(x=>big.has(x));
+      if(!(subset || (union && inter/union >= .6))) continue;
+      const pairKey = role+":"+[a.it.id, b.it.id].sort().join("|");
+      if(sprDismissed.has(pairKey)) continue;
+      const [keep, drop] = (b.n > a.n || (b.n===a.n && b.it.label.length < a.it.label.length)) ? [b,a] : [a,b];
+      out.push({role, keep:keep.it, drop:drop.it, pairKey});
+    }
+  });
+  return out;
+}
+
+/* ---- SPR checks ---- */
+function sprChecks(r, all){
+  const out = [];
+  const g = role=>sprGroupOf(r, role), k = role=>sprKey(g(role)), id = role=>sprIdOf(r, role);
+  ["source","pathway","receptor"].forEach(role=>{
+    if(!k(role)) out.push({id:"incomplete", lv:"bad", t:`No ${role}. Without all three links there is no risk to rate.`});
+    else if(SPR_GENERIC.has(k(role))) out.push({id:"generic", lv:"warn", t:`Generic ${role} ("${g(role)}"). Pick or add a specific ${role} in the model.`});
+  });
+  if(!k("impact") || SPR_GENERIC.has(k("impact"))) out.push({id:"impact", lv:"warn", t:"Impact is missing or generic. State the adverse effect on the receptor."});
+  if(k("receptor") && /\band\b|&|\/|,|\+/i.test(g("receptor"))) out.push({id:"combined", lv:"warn", t:`"${g("receptor")}" may combine several receptors. Use one receptor per linkage.`});
+  if(k("receptor") && k("receptor")===k("source")) out.push({id:"selfref", lv:"warn", t:"The receptor repeats the source. The receptor is what gets harmed, not what causes harm."});
+  if(k("pathway") && k("source") && (k("pathway")===k("source") || k("source").includes(k("pathway")))) out.push({id:"pathway", lv:"warn", t:"The pathway repeats the source. Say how the effect reaches the receptor (e.g. seepage, runoff, dust, direct removal)."});
+  if(/\b(workers?|employees?|contractors?|staff|personnel|operators?)\b/i.test(g("receptor"))) out.push({id:"workers", lv:"warn", t:"Workers are not environmental receptors. Manage them under WHS."});
+  if(r.reviewStatus==="Approved" && !String(r.evidenceReference||"").trim()) out.push({id:"evidence", lv:"warn", t:"Approved without an evidence reference."});
+  if(r.relationshipStatus==="Assumed" && ["High","Extreme"].includes(r.resRating)) out.push({id:"assumed", lv:"bad", t:`A ${r.resRating} residual risk rests on an assumed link. Confirm it with data.`});
+  if(["High","Extreme"].includes(r.resRating) && !r.controlPoint) out.push({id:"control", lv:"warn", t:"Say which link the controls break: source, pathway or receptor."});
+  if(id("source") && id("pathway") && id("receptor")){
+    const dup = (all||[]).filter(x=>x!==r && !x._archived && sprIdOf(x,"source")===id("source") && sprIdOf(x,"pathway")===id("pathway") && sprIdOf(x,"receptor")===id("receptor"));
+    if(dup.length) out.push({id:"duplicate", lv:"warn", t:`Same source, pathway and receptor as ${dup.map(x=>"#"+x.id).join(", ")}. Merge them or make the difference clear.`});
+  }
+  return out;
+}
+const SPR_CHECK_LABEL = {incomplete:"Incomplete linkage", generic:"Generic source, pathway or receptor", impact:"Missing or generic impact",
+  combined:"Receptor combines several receptors", selfref:"Receptor repeats the source", pathway:"Pathway repeats the source",
+  workers:"Workers listed as a receptor", evidence:"Approved without evidence", assumed:"High or Extreme risk on an assumed link",
+  control:"High or Extreme risk with no control point", duplicate:"Duplicate linkage"};
+function sprChecksHtml(checks){
+  if(!checks.length) return `<div class="spr-checkok">\u2714 No SPR issues found.</div>`;
+  return `<ul class="spr-checklist">${checks.map(c=>`<li class="${c.lv}">${sprX(c.t)}</li>`).join("")}</ul>`;
+}
+
+/* ---- Filters and selection ---- */
+function sprActive(){ return RISKS.filter(r=>!r._archived); }
+function sprFilteredList(){
+  const q = sprF.q.trim().toLowerCase();
+  return sprActive().filter(r=>{
+    if(sprF.tax!=="All" && topTaxonomyValueOf(r)!==sprF.tax) return false;
+    if(sprF.phase && !(r.phases||[]).includes(sprF.phase)) return false;
+    if(sprF.review==="Approved" && r.reviewStatus!=="Approved") return false;
+    if(sprF.review==="open" && r.reviewStatus==="Approved") return false;
+    if(q){
+      const hay = [r.id, ...SPR_ALL.map(role=>sprGroupOf(r, role)), ...SPR_ALL.map(role=>sprIdOf(r, role)), richHtmlToPlainText(r.source), richHtmlToPlainText(r.pathway), richHtmlToPlainText(r.receptor)].join(" ").toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+function sprFilterText(){
+  const bits = [];
+  if(sprF.tax!=="All") bits.push(sprF.tax);
+  if(sprF.phase) bits.push(sprF.phase);
+  if(sprF.review==="Approved") bits.push("approved links only");
+  if(sprF.review==="open") bits.push("links not yet approved");
+  if(sprF.q.trim()) bits.push(`matching "${sprF.q.trim()}"`);
+  return bits.join(", ");
+}
+function sprSelRisks(list){
+  const s = sprSel; if(!s) return [];
+  if(s.kind==="group") return list.filter(r=>sprIdOf(r, s.role)===s.key);
+  if(s.kind==="edge" || s.kind==="cell") return list.filter(r=>s.ids.includes(r.id));
+  return [];
+}
+function sprDetailHtml(list){
+  if(!sprSel) return "";
+  const rows = sprSelRisks(list);
+  const all = sprActive();
+  let html = `<div class="spr-detail-list"><div class="spr-detail-head"><strong>${sprX(sprSel.label)}</strong>
+    <span class="panel-sub">${rows.length} risk${rows.length===1?"":"s"}</span><span class="spacer"></span>
+    ${rows.length?`<button class="btn" id="spr-to-register" type="button">Show in register</button>`:""}<span class="chip" id="spr-clear-sel">Clear</span></div>`;
+  if(!rows.length) html += `<div class="empty-state" style="padding:16px;">No risks match this selection.</div>`;
+  else html += `<div class="scroll-x"><table><thead><tr><th>Risk</th><th>Source</th><th>Pathway</th><th>Receptor</th><th>Impact</th><th>Inh.</th><th>Res.</th><th>Review</th><th>Checks</th><th></th></tr></thead><tbody>${rows.map(r=>{
+      const n = sprChecks(r, all).length;
+      return `<tr><td>#${r.id}</td><td class="spr-s">${sprX(sprGroupOf(r,"source"))}</td><td class="spr-p">${sprX(sprGroupOf(r,"pathway"))}</td><td class="spr-r">${sprX(sprGroupOf(r,"receptor"))}</td>
+      <td class="spr-i">${sprX(sprGroupOf(r,"impact"))}</td><td>${sprRatingPill(r.inhRating)}</td><td>${sprRatingPill(r.resRating)}</td><td>${sprBadge(r.reviewStatus)}</td>
+      <td>${n?`<span class="spr-warn">\u26a0 ${n}</span>`:`<span class="spr-okmark">\u2714</span>`}</td><td style="white-space:nowrap;"><button class="btn" data-sprreview="${r.id}" type="button">Review</button> <button class="btn" data-spredit="${r.id}" type="button">Edit</button></td></tr>`;
+    }).join("")}</tbody></table></div>`;
+  return html + `</div>`;
+}
+function wireSprDetail(list, rerender){
+  const clr = document.getElementById("spr-clear-sel");
+  if(clr) clr.addEventListener("click", ()=>{ sprSel = null; rerender(); });
+  const reg = document.getElementById("spr-to-register");
+  if(reg) reg.addEventListener("click", ()=>{
+    const ids = sprSelRisks(list).map(r=>r.id);
+    themeFilter = {role:"edge", ids, label:"SPR: " + sprSel.label};
+    rdSetView("register");
+    renderAll();
+    document.getElementById("register-body").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+  document.querySelectorAll("#pathway-analysis-body [data-spredit]").forEach(b=>b.addEventListener("click", ()=>openDrawer(Number(b.dataset.spredit))));
+  document.querySelectorAll("#pathway-analysis-body [data-sprreview]").forEach(b=>b.addEventListener("click", ()=>{
+    sprSelectedId = Number(b.dataset.sprreview); sprQueueStatus = "all"; pathwayTab = "review"; renderPathwayAnalysis();
+  }));
+}
+
+/* ---- Register filtering from the SPR tab ---- */
+function visibleRisks(){
+  let list = ratingFilteredRisks();
+  if(activeCell){
+    const consKey = viewMode==="inh" ? "inhCons" : "resCons";
+    const likeKey = viewMode==="inh" ? "inhLike" : "resLike";
+    list = list.filter(r => r[consKey]===activeCell.cons && r[likeKey]===activeCell.like);
+  }
+  if(themeFilter && themeFilter.role==="edge") list = list.filter(r=>(themeFilter.ids||[]).includes(r.id));
+  list = [...list];
+  if(sortByRecent) list.sort((a,b) => new Date(b._lastEditedAt||0) - new Date(a._lastEditedAt||0));
+  else list.sort((a,b) => a.id - b.id);
+  return list;
+}
+const __rdActiveFiltersBar = renderActiveFiltersBar;
+renderActiveFiltersBar = function(){
+  __rdActiveFiltersBar.apply(this, arguments);
+  if(rdShowNeedsApproval){
+    const el0 = document.getElementById("active-filters-bar");
+    let bar0 = el0.querySelector(".active-filters");
+    if(!bar0){ const n = visibleRisks().length; el0.innerHTML = `<div class="active-filters"><span class="af-label">Filtered \u2014 ${n} risk${n===1?"":"s"}</span><span class="af-clearall" id="af-clear-all">Clear all</span></div>`; bar0 = el0.querySelector(".active-filters"); }
+    const c0 = document.createElement("span"); c0.className = "af-chip"; c0.innerHTML = `Needs approval<span class="af-x" id="af-appr-x">\u2715</span>`;
+    bar0.querySelector(".af-label").after(c0);
+    document.getElementById("af-appr-x").addEventListener("click", ()=>{ rdShowNeedsApproval = false; renderAll(); });
+    const ca0 = document.getElementById("af-clear-all"); if(ca0) ca0.addEventListener("click", ()=>{ rdShowNeedsApproval = false; renderAll(); });
+  }
+  if(!themeFilter || themeFilter.role!=="edge") return;
+  const el = document.getElementById("active-filters-bar");
+  let bar = el.querySelector(".active-filters");
+  if(!bar){ const n = visibleRisks().length; el.innerHTML = `<div class="active-filters"><span class="af-label">Filtered \u2014 ${n} risk${n===1?"":"s"}</span><span class="af-clearall" id="af-clear-all">Clear all</span></div>`; bar = el.querySelector(".active-filters"); }
+  const chip = document.createElement("span");
+  chip.className = "af-chip";
+  chip.innerHTML = `${sprX(themeFilter.label)}<span class="af-x" id="af-spr-x">\u2715</span>`;
+  bar.querySelector(".af-label").after(chip);
+  document.getElementById("af-spr-x").addEventListener("click", ()=>{ themeFilter = null; renderAll(); });
+  const ca = document.getElementById("af-clear-all"); if(ca) ca.addEventListener("click", ()=>{ themeFilter = null; renderAll(); });
+};
+
+/* ---- Tabs ---- */
+function rdSetView(v){
+  rdView = v;
+  document.getElementById("rd-view-register").hidden = v!=="register";
+  document.getElementById("rd-view-spr").hidden = v!=="spr";
+  document.querySelectorAll(".rd-tab").forEach(b=>{ const on = b.dataset.view===v; b.classList.toggle("active", on); b.setAttribute("aria-selected", String(on)); });
+  if(v==="spr") renderPathwayAnalysis();
+}
+document.querySelectorAll(".rd-tab").forEach(b=>b.addEventListener("click", ()=>rdSetView(b.dataset.view)));
+const SPR_TABS = ["spr","matrix","review","model","quality","guide"];
+function rdSyncSprTabs(){
+  SPR_TABS.forEach(t=>{ const el = document.getElementById("tab-"+t); if(el) el.classList.toggle("active", t===pathwayTab); });
+  const rb = document.getElementById("rd-tab-reg-count");
+  if(rb){ const n = RISKS.filter(r=>!r._archived && rdNeedsApproval(r)).length; rb.textContent = n ? `${n} to approve` : ""; rb.title = n ? `${n} AI-generated risk${n===1?"":"s"} awaiting approval` : ""; rb.hidden = !n; }
+  const badge = document.getElementById("rd-tab-spr-count");
+  if(badge){ const all = sprActive(); const n = all.filter(r=>sprChecks(r, all).length).length;
+    badge.textContent = n ? `\u26a0 ${n}` : ""; badge.title = n ? `${n} risk${n===1?" has":"s have"} SPR issues to check` : ""; badge.hidden = !n; }
+}
+SPR_TABS.forEach(tab=>{
+  const el = document.getElementById("tab-"+tab);
+  if(el) el.addEventListener("click", ()=>{ pathwayTab = tab; sprSel = null; renderPathwayAnalysis(); });
+});
+function renderPathwayAnalysis(){
+  rdSyncSprTabs();
+  if(pathwayTab==="matrix") renderSprMatrix();
+  else if(pathwayTab==="review") renderSprReview();
+  else if(pathwayTab==="model") renderSprModelEditor();
+  else if(pathwayTab==="quality") renderSprQuality();
+  else if(pathwayTab==="guide") renderSprGuide();
+  else renderSPRFlow();
+}
+
+/* ---- Toolbar ---- */
+function sprToolbarHtml(kind){
+  const fw = activeFramework;
+  const taxOpts = ["All", ...topTaxonomyOptions()];
+  return `<div class="spr-toolbar">
+    <select id="spr-f-tax" aria-label="${sprX(taxLabels().top)}">${taxOpts.map(t=>`<option value="${sprX(t)}" ${sprF.tax===t?"selected":""}>${t==="All"?sprX(taxLabels().top)+": all":sprX(t)}</option>`).join("")}</select>
+    ${fw.phasesEnabled?`<select id="spr-f-phase" aria-label="Phase"><option value="">${sprX(phaseLabelOf())}: all</option>${fw.phaseOptions.map(p=>`<option ${sprF.phase===p?"selected":""}>${sprX(p)}</option>`).join("")}</select>`:""}
+    <select id="spr-f-review" aria-label="Review status">
+      <option value="all" ${sprF.review==="all"?"selected":""}>All links</option>
+      <option value="Approved" ${sprF.review==="Approved"?"selected":""}>Approved links only</option>
+      <option value="open" ${sprF.review==="open"?"selected":""}>Links not yet approved</option>
+    </select>
+    <input type="search" id="spr-f-q" placeholder="Find an item or risk" value="${sprX(sprF.q)}" aria-label="Search the SPR model">
+    <span class="chip-row" role="group" aria-label="Rating basis"><span class="chip ${viewMode==="inh"?"active":""}" data-basis="inh">Inherent</span><span class="chip ${viewMode==="res"?"active":""}" data-basis="res">Residual</span></span>
+    ${kind==="net"?`<label class="spr-check"><input type="checkbox" id="spr-f-impact" ${sprShowImpact?"checked":""}> Impacts</label>`:""}
+    <span class="spacer"></span>
+    ${kind==="net"?`<button class="btn" id="spr-export-png" type="button" title="Download the figure as a PNG image">\u2b07 PNG</button><button class="btn" id="spr-export-svg" type="button" title="Download the figure as an SVG you can edit or scale">\u2b07 SVG</button>`:""}
+    <button class="btn" id="spr-export-table" type="button" title="Download the SPR model and linkages as Excel">\u2b07 Excel</button>
+  </div>`;
+}
+function wireSprToolbar(rerender){
+  const on = (id, ev, fn)=>{ const el = document.getElementById(id); if(el) el.addEventListener(ev, fn); };
+  on("spr-f-tax", "change", e=>{ sprF.tax = e.target.value; sprSel = null; rerender(); });
+  on("spr-f-phase", "change", e=>{ sprF.phase = e.target.value; sprSel = null; rerender(); });
+  on("spr-f-review", "change", e=>{ sprF.review = e.target.value; sprSel = null; rerender(); });
+  on("spr-f-q", "input", e=>{
+    sprF.q = e.target.value; const pos = e.target.selectionStart; rerender();
+    const q = document.getElementById("spr-f-q"); if(q){ q.focus(); q.setSelectionRange(pos, pos); }
+  });
+  on("spr-f-impact", "change", e=>{ sprShowImpact = e.target.checked; if(sprSel && sprSel.role==="impact") sprSel = null; rerender(); });
+  document.querySelectorAll("#pathway-analysis-body [data-basis]").forEach(ch=>ch.addEventListener("click", ()=>{
+    if(viewMode!==ch.dataset.basis) document.getElementById(ch.dataset.basis==="inh" ? "view-inh" : "view-res").click();
+  }));
+  on("spr-export-png", "click", ()=>sprExportFigure("png"));
+  on("spr-export-svg", "click", ()=>sprExportFigure("svg"));
+  on("spr-export-table", "click", sprExportTable);
+  makeChipsFocusable(document.getElementById("pathway-analysis-body"));
+}
+
+/* ---- The figure ---- */
+function sprWrap(s, n){
+  const words = String(s).split(/\s+/).filter(Boolean);
+  const lines = [""];
+  words.forEach(w=>{
+    const cur = lines[lines.length-1];
+    if(!cur || (cur+" "+w).length <= n) lines[lines.length-1] = (cur ? cur+" " : "") + w;
+    else if(lines.length < 2) lines.push(w);
+    else lines[1] += " " + w;
+  });
+  return lines.map(l=> l.length > n ? l.slice(0, n-1) + "\u2026" : l);
+}
+function sprNetworkSvg(list, o){
+  o = o || {};
+  const rk = viewMode==="inh" ? "inhRating" : "resRating";
+  const basis = viewMode==="inh" ? "inherent" : "residual";
+  const roles = sprShowImpact ? SPR_ALL : ["source","pathway","receptor"];
+  const cols = roles.map(role=>sprGroups(role, list));
+  const idx = cols.map(c=>new Map(c.map(n=>[n.id, n])));
+  const nodeOf = (r, ci)=> idx[ci].get(sprIdOf(r, roles[ci]));
+  // Start in model order, then pull linked boxes level with each other to cut crossings.
+  cols.forEach((c,ci)=>{ const order = sprItems(roles[ci]).map(x=>x.id); c.sort((a,b)=>order.indexOf(a.id)-order.indexOf(b.id)); c.forEach((n,i)=>{ n.o = i; }); });
+  const mean = (n, ci)=> n.risks.reduce((s,r)=>{ const x = nodeOf(r, ci); return s + (x ? x.o : 0); }, 0) / n.risks.length;
+  for(let it=0; it<10; it++){
+    for(let ci=0; ci<roles.length; ci++){
+      cols[ci].forEach(n=>{ const nb = []; if(ci>0) nb.push(mean(n, ci-1)); if(ci<roles.length-1) nb.push(mean(n, ci+1)); n.b = nb.reduce((a,b)=>a+b,0)/nb.length; });
+      cols[ci].sort((a,b)=>a.b-b.b || b.risks.length-a.risks.length);
+      cols[ci].forEach((n,i)=>{ n.o = i; });
+    }
+  }
+  const PAD = 18, NW = 214, GAP = 12;
+  const colGap = roles.length===4 ? 84 : 140;
+  const TITLE_H = 62, HEAD_H = 50, LEG_H = 44;
+  const TOP = TITLE_H + HEAD_H;
+  const X = roles.map((_,i)=>PAD + i*(NW+colGap));
+  const W = X[X.length-1] + NW + PAD;
+  cols.forEach(c=>c.forEach(n=>{ n.lines = sprWrap(n.label, 27); n.h = Math.max(n.lines.length>1 ? 56 : 44, 20 + n.risks.length*8); }));
+  const colH = cols.map(c=>c.reduce((s,n)=>s+n.h,0) + GAP*Math.max(0, c.length-1));
+  const bodyH = Math.max(...colH, 60);
+  cols.forEach((c,ci)=>{ let y = TOP + (bodyH-colH[ci])/2; c.forEach(n=>{ n.y = y; y += n.h + GAP; }); });
+  const H = Math.ceil(TOP + bodyH + 18 + LEG_H);
+  const selIds = o.sel ? new Set(sprSelRisks(list).map(r=>r.id)) : null;
+
+  const edges = [];
+  for(let ci=0; ci<roles.length-1; ci++){
+    const m = new Map();
+    list.forEach(r=>{
+      const a = nodeOf(r, ci), b = nodeOf(r, ci+1);
+      if(!a || !b) return;
+      const k = a.id + "|" + b.id;
+      if(!m.has(k)) m.set(k, {ci, a, b, risks:[]});
+      m.get(k).risks.push(r);
+    });
+    edges.push(...m.values());
+  }
+  cols.forEach(c=>c.forEach(n=>{ n.out = []; n.inn = []; }));
+  edges.forEach(e=>{ e.a.out.push(e); e.b.inn.push(e); });
+  const slot = (n, arr, e, partner)=>{
+    const sorted = [...arr].sort((x,y)=>partner(x).o - partner(y).o);
+    const total = sorted.reduce((s,x)=>s+x.risks.length, 0);
+    let acc = 0;
+    for(const x of sorted){ if(x===e) break; acc += x.risks.length; }
+    return n.y + 9 + ((acc + e.risks.length/2)/total) * (n.h - 18);
+  };
+  edges.sort((x,y)=>RATING_ORDER.indexOf(sprHighest(x.risks, rk)) - RATING_ORDER.indexOf(sprHighest(y.risks, rk)));
+
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" font-family="Figtree, 'Segoe UI', Arial, sans-serif" role="img" aria-label="Source, pathway, receptor${sprShowImpact?" and impact":""} model">`;
+  s += `<rect x="0" y="0" width="${W}" height="${H}" fill="#FFFFFF"/>`;
+  const date = new Date().toLocaleDateString(undefined, {day:"numeric", month:"short", year:"numeric"});
+  s += `<text x="${PAD}" y="28" font-size="17" font-weight="700" fill="#1E1E1E">${sprX(project.name||"Untitled project")}: source\u2013pathway\u2013receptor model</text>`;
+  const approvedN = list.filter(r=>r.reviewStatus==="Approved").length;
+  s += `<text x="${PAD}" y="48" font-size="11.5" fill="#565D4F">${sprX([shortFwName(activeFramework), `${list.length} risk${list.length===1?"":"s"}`, `${approvedN} of ${list.length} link${list.length===1?"":"s"} approved`, `${basis} ratings`, sprFilterText(), date].filter(Boolean).join("  \u00b7  "))}</text>`;
+  roles.forEach((role, ci)=>{
+    const col = SPR_COL[role];
+    s += `<rect x="${X[ci]-10}" y="${TITLE_H+2}" width="${NW+20}" height="${HEAD_H+bodyH+8}" rx="12" fill="${col.band}"/>`;
+    s += `<text x="${X[ci]+NW/2}" y="${TITLE_H+23}" text-anchor="middle" font-size="12" font-weight="700" fill="${col.stroke}" letter-spacing="1.2">${SPR_PLURAL[role].toUpperCase()}</text>`;
+    s += `<text x="${X[ci]+NW/2}" y="${TITLE_H+39}" text-anchor="middle" font-size="10.5" fill="#6B6F63">${SPR_DESC[role]}</text>`;
+  });
+  edges.forEach(e=>{
+    const top = sprHighest(e.risks, rk);
+    const ya = slot(e.a, e.a.out, e, x=>x.b), yb = slot(e.b, e.b.inn, e, x=>x.a);
+    const xa = X[e.ci] + NW, xb = X[e.ci+1], mx = (xa+xb)/2;
+    const dashed = e.risks.some(r=>r.relationshipStatus!=="Explicit");
+    const lit = !selIds || e.risks.some(r=>selIds.has(r.id));
+    s += `<path class="spr-edge" data-ids="${e.risks.map(r=>r.id).join(",")}" data-label="${sprX(e.a.label+" \u2192 "+e.b.label)}" d="M${xa},${ya.toFixed(1)} C${mx},${ya.toFixed(1)} ${mx},${yb.toFixed(1)} ${xb},${yb.toFixed(1)}" stroke="${SPR_RCOL[top]||"#9A9A8F"}" stroke-width="${Math.min(2.4 + e.risks.length*1.6, 12).toFixed(1)}" fill="none" stroke-linecap="round" opacity="${lit ? (selIds ? .95 : .7) : .07}"${dashed?' stroke-dasharray="7 5"':""}><title>${sprX(`${e.a.label} \u2192 ${e.b.label}: risk${e.risks.length===1?"":"s"} #${e.risks.map(r=>r.id).join(", #")}, highest ${basis} ${top||"not rated"}${dashed?", includes derived or assumed links":""}`)}</title></path>`;
+  });
+  cols.forEach((c,ci)=>{
+    const role = roles[ci], col = SPR_COL[role];
+    c.forEach(n=>{
+      const top = sprHighest(n.risks, rk);
+      const isSel = o.sel && o.sel.kind==="group" && o.sel.role===role && o.sel.key===n.id;
+      const lit = !selIds || n.risks.some(r=>selIds.has(r.id));
+      s += `<g class="spr-node" data-role="${role}" data-key="${sprX(n.id)}" data-ids="${n.risks.map(r=>r.id).join(",")}" tabindex="0" opacity="${lit?1:.28}">
+        <title>${sprX(`${n.id} ${n.label}${n.note?". "+n.note:""}. Risk${n.risks.length===1?"":"s"} #${n.risks.map(r=>r.id).join(", #")}. Highest ${basis}: ${top||"not rated"}.`)}</title>
+        <rect x="${X[ci]}" y="${n.y.toFixed(1)}" width="${NW}" height="${n.h}" rx="8" fill="${isSel?"#EAF7C9":"#FFFFFF"}" stroke="${isSel?"#263326":col.stroke}" stroke-width="${isSel?2.4:1.1}"/>
+        <rect x="${X[ci]}" y="${n.y.toFixed(1)}" width="6" height="${n.h}" rx="3" fill="${col.stroke}"/>
+        ${n.lines.map((l,i)=>`<text x="${X[ci]+15}" y="${(n.y+19+i*14).toFixed(1)}" font-size="12.5" font-weight="600" fill="#1E1E1E">${sprX(l)}</text>`).join("")}
+        <text x="${X[ci]+15}" y="${(n.y+n.h-9).toFixed(1)}" font-size="10.5" fill="#6B6F63">${n.id} \u00b7 ${n.risks.length} risk${n.risks.length===1?"":"s"}</text>
+        ${top?`<circle cx="${X[ci]+NW-14}" cy="${(n.y+n.h-13).toFixed(1)}" r="6" fill="${SPR_RCOL[top]}"/>`:""}
+      </g>`;
+    });
+  });
+  const ly = TOP + bodyH + 30;
+  let lx = PAD;
+  s += `<line x1="${PAD}" y1="${ly-16}" x2="${W-PAD}" y2="${ly-16}" stroke="#E4E2D8"/>`;
+  s += `<text x="${lx}" y="${ly+4}" font-size="11" font-weight="700" fill="#565D4F">Highest ${basis} rating</text>`; lx += 138;
+  RATING_ORDER.forEach(rt=>{ s += `<line x1="${lx}" y1="${ly}" x2="${lx+22}" y2="${ly}" stroke="${SPR_RCOL[rt]}" stroke-width="5" stroke-linecap="round"/><text x="${lx+28}" y="${ly+4}" font-size="11" fill="#1E1E1E">${rt}</text>`; lx += 84; });
+  lx += 10;
+  s += `<line x1="${lx}" y1="${ly}" x2="${lx+26}" y2="${ly}" stroke="#8A8A80" stroke-width="3" stroke-dasharray="7 5"/><text x="${lx+32}" y="${ly+4}" font-size="11" fill="#1E1E1E">Derived or assumed link</text>`; lx += 190;
+  s += `<text x="${lx}" y="${ly+4}" font-size="11" fill="#6B6F63">Line width = number of risks</text>`;
+  s += `</svg>`;
+  return {svg:s, W, H};
+}
+function sprRuledOutHtml(){
+  const rows = sprModel().ruledOut.filter(x=>x.source || x.receptor);
+  if(!rows.length) return "";
+  const lab = (role, id)=>{ const it = sprItem(role, id); return it ? `${it.id} ${it.label}` : "\u2014"; };
+  return `<details class="spr-ruled"><summary>Linkages ruled out (${rows.length})</summary>
+    <table><thead><tr><th>Source</th><th>Pathway</th><th>Receptor</th><th>Why there is no complete linkage</th></tr></thead><tbody>
+    ${rows.map(x=>`<tr><td class="spr-s">${sprX(lab("source", x.source))}</td><td class="spr-p">${sprX(x.pathway ? lab("pathway", x.pathway) : "Any")}</td><td class="spr-r">${sprX(lab("receptor", x.receptor))}</td><td>${sprX(x.reason||"")}</td></tr>`).join("")}
+    </tbody></table></details>`;
+}
+function renderSPRFlow(){
+  const el = document.getElementById("pathway-analysis-body");
+  const list = sprFilteredList();
+  const rerender = ()=>renderSPRFlow();
+  if(!list.length){
+    el.innerHTML = sprToolbarHtml("net") + `<div class="empty-state">${sprF.review==="Approved" ? "No approved links yet. Approve them in the Linkages tab." : "No risks match these filters."}</div>`;
+    wireSprToolbar(rerender); return;
+  }
+  const fig = sprNetworkSvg(list, {sel: sprSel});
+  const hidden = sprActive().length - list.length;
+  el.innerHTML = sprToolbarHtml("net") +
+    `<div class="spr-fig scroll-x" id="spr-fig">${fig.svg}</div>
+     <div class="panel-sub" style="margin-top:6px;">Each box is one item in the project's SPR model. Hover a box to trace its links, or click a box or line to list its risks.${hidden?` ${hidden} risk${hidden===1?" is":"s are"} hidden by the filters.`:""}</div>` +
+    sprDetailHtml(list) + sprRuledOutHtml();
+  wireSprToolbar(rerender);
+  const svg = el.querySelector("#spr-fig svg");
+  const edgesEls = [...svg.querySelectorAll(".spr-edge")];
+  svg.querySelectorAll(".spr-node").forEach(g=>{
+    const ids = new Set(g.dataset.ids.split(",").map(Number));
+    g.addEventListener("mouseenter", ()=>{ if(sprSel) return; svg.classList.add("hovering"); edgesEls.forEach(p=>{ if(p.dataset.ids.split(",").some(x=>ids.has(Number(x)))) p.classList.add("hl"); }); });
+    g.addEventListener("mouseleave", ()=>{ svg.classList.remove("hovering"); edgesEls.forEach(p=>p.classList.remove("hl")); });
+    const pick = ()=>{
+      const role = g.dataset.role, key = g.dataset.key, it = sprItem(role, key);
+      sprSel = (sprSel && sprSel.kind==="group" && sprSel.role===role && sprSel.key===key) ? null : {kind:"group", role, key, label:`${SPR_LABEL[role]} ${key}: ${it ? it.label : key}`};
+      renderSPRFlow();
+    };
+    g.addEventListener("click", pick);
+    g.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); pick(); } });
+  });
+  edgesEls.forEach(p=>p.addEventListener("click", ()=>{
+    const ids = p.dataset.ids.split(",").map(Number);
+    const same = sprSel && sprSel.kind==="edge" && sprSel.label===p.dataset.label;
+    sprSel = same ? null : {kind:"edge", ids, label:p.dataset.label};
+    renderSPRFlow();
+  }));
+  wireSprDetail(list, rerender);
+}
+function sprDownload(blob, name){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+function sprFileBase(){ return (project.name || "project").replace(/[^a-z0-9]+/gi, "_") + "_SPR_model"; }
+function sprExportFigure(fmt){
+  const list = sprFilteredList();
+  if(!list.length){ alert("Nothing to export with the current filters."); return; }
+  const fig = sprNetworkSvg(list, {sel:null});
+  if(fmt==="svg"){ sprDownload(new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + fig.svg], {type:"image/svg+xml"}), sprFileBase() + ".svg"); return; }
+  const img = new Image();
+  img.onload = ()=>{
+    const scale = 2, c = document.createElement("canvas");
+    c.width = fig.W*scale; c.height = fig.H*scale;
+    const ctx = c.getContext("2d");
+    ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.drawImage(img, 0, 0, c.width, c.height);
+    try{ c.toBlob(b=>{ if(b) sprDownload(b, sprFileBase() + ".png"); else alert("PNG export failed. Try SVG instead."); }, "image/png"); }
+    catch(e){ alert("PNG export isn't allowed by this browser. Try SVG instead."); }
+  };
+  img.onerror = ()=>alert("PNG export failed. Try SVG instead.");
+  img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(fig.svg);
+}
+function sprExportTable(){
+  const fw = activeFramework, tl = taxLabels(), all = sprActive();
+  const taxH = fw.taxonomyType==="factor-indicator" ? [tl.top, tl.sub] : [tl.top];
+  const lh = ["Risk", ...taxH, "Source ID","Source","Pathway ID","Pathway","Receptor ID","Receptor","Impact ID","Impact",
+    "Linkage basis","Confidence","Controls act on","Evidence reference","Linkage origin","Linkage review","Approved by","Approved on","Inh. rating","Res. rating","SPR checks"];
+  const lrows = [lh];
+  sprFilteredList().forEach(r=>{
+    const taxV = fw.taxonomyType==="factor-indicator" ? [r.factor||"", r.indicator||""] : [r.receptorCategory||""];
+    lrows.push([r.id, ...taxV, ...SPR_ALL.flatMap(role=>[sprIdOf(r, role), sprGroupOf(r, role)]),
+      r.relationshipStatus||"", r.confidence||"", r.controlPoint||"", r.evidenceReference||"", r.sprOrigin||"", r.reviewStatus||"", r.reviewStatus==="Approved" ? (r.sprApprovedBy||"") : "", r.reviewStatus==="Approved" ? rdFmtDate(r.sprApprovedAt) : "", r.inhRating||"", r.resRating||"",
+      sprChecks(r, all).map(c=>c.t).join("\n")]);
+  });
+  const inhC = lh.indexOf("Inh. rating"), resC = lh.indexOf("Res. rating");
+  const lstyle = (ri,c)=>{ if(ri===0) return 1; if(c===inhC) return ratingStyleId(lrows[ri][inhC]); if(c===resC) return ratingStyleId(lrows[ri][resC]); return 0; };
+  const mh = ["Type","ID","Item","Notes","Risks using it"];
+  const mrows = [mh];
+  SPR_ALL.forEach(role=>sprItems(role).forEach(it=>mrows.push([SPR_LABEL[role], it.id, it.label, it.note||"", sprUsage(role, it.id)])));
+  const ro = sprModel().ruledOut.map(x=>[x.source, (sprItem("source",x.source)||{}).label||"", x.pathway||"", (sprItem("pathway",x.pathway)||{}).label||"Any", x.receptor, (sprItem("receptor",x.receptor)||{}).label||"", x.reason||""]);
+  const sheets = [{name:"SPR linkages", rows:lrows, styleFor:lstyle, colCount:lh.length},
+    {name:"SPR model", rows:mrows, styleFor:(ri)=>ri===0?1:0, colCount:mh.length}];
+  if(ro.length) sheets.push({name:"Ruled out", rows:[["Source ID","Source","Pathway ID","Pathway","Receptor ID","Receptor","Reason"], ...ro], styleFor:(ri)=>ri===0?1:0, colCount:7});
+  downloadWorkbook(buildWorkbook(sheets), sprFileBase() + ".xlsx");
+}
+
+/* ---- Source x receptor matrix ---- */
+function renderSprMatrix(){
+  const el = document.getElementById("pathway-analysis-body");
+  const list = sprFilteredList();
+  const rk = viewMode==="inh" ? "inhRating" : "resRating";
+  const rerender = ()=>renderSprMatrix();
+  if(!list.length){ el.innerHTML = sprToolbarHtml("matrix") + `<div class="empty-state">No risks match these filters.</div>`; wireSprToolbar(rerender); return; }
+  const order = role=>{ const ids = sprItems(role).map(x=>x.id); return (a,b)=>ids.indexOf(a.id)-ids.indexOf(b.id); };
+  const srcs = sprGroups("source", list).sort(order("source")), recs = sprGroups("receptor", list).sort(order("receptor"));
+  let html = `<div class="panel-sub" style="margin-bottom:8px;">Sources down the side, receptors across the top. Each cell lists the pathways that link them, coloured by the highest ${viewMode==="inh"?"inherent":"residual"} rating. A blank cell means no linkage is recorded. Click a pathway to list its risks.</div>
+    <div class="scroll-x"><table class="spr-matrix"><thead><tr><th class="corner"><span class="spr-s">Source</span> \u2193 &nbsp; <span class="spr-r">Receptor</span> \u2192</th>
+    ${recs.map(r=>`<th title="${sprX(r.note||"")}"><span class="spr-id">${r.id}</span>${sprX(r.label)}</th>`).join("")}</tr></thead><tbody>`;
+  srcs.forEach(s=>{
+    html += `<tr><th title="${sprX(s.note||"")}"><span class="spr-id">${s.id}</span>${sprX(s.label)}</th>`;
+    recs.forEach(rc=>{
+      const cell = list.filter(r=>sprIdOf(r,"source")===s.id && sprIdOf(r,"receptor")===rc.id);
+      if(!cell.length){ html += `<td class="empty"></td>`; return; }
+      const paths = sprGroups("pathway", cell);
+      html += `<td>${paths.map(p=>{ const top = sprHighest(p.risks, rk); const ids = p.risks.map(r=>r.id);
+        const dashed = p.risks.some(r=>r.relationshipStatus!=="Explicit");
+        const on = sprSel && sprSel.kind==="cell" && sprSel.key===`${s.id}|${p.id}|${rc.id}`;
+        return `<button type="button" class="spr-mchip${dashed?" dashed":""}${on?" on":""}" style="border-color:${SPR_RCOL[top]||"#9A9A8F"};" data-cell="${s.id}|${p.id}|${rc.id}" data-ids="${ids.join(",")}" data-label="${sprX(`${s.label} \u2192 ${p.label} \u2192 ${rc.label}`)}" title="Risk${ids.length===1?"":"s"} #${ids.join(", #")}"><i style="background:${SPR_RCOL[top]||"#9A9A8F"}"></i>${sprX(p.label)}${ids.length>1?` <b>${ids.length}</b>`:""}</button>`; }).join("")}</td>`;
+    });
+    html += `</tr>`;
+  });
+  html += `</tbody></table></div>`;
+  el.innerHTML = sprToolbarHtml("matrix") + html + sprDetailHtml(list);
+  wireSprToolbar(rerender);
+  el.querySelectorAll(".spr-mchip").forEach(b=>b.addEventListener("click", ()=>{
+    const key = b.dataset.cell;
+    sprSel = (sprSel && sprSel.kind==="cell" && sprSel.key===key) ? null : {kind:"cell", key, ids:b.dataset.ids.split(",").map(Number), label:b.dataset.label};
+    renderSprMatrix();
+  }));
+  wireSprDetail(list, rerender);
+}
+
+/* ---- Linkages (one per risk) ---- */
+function sprSelectHtml(role, id, current){
+  return `<select id="${id}" data-role="${role}" class="spr-item-select">${sprItems(role).map(it=>`<option value="${sprX(it.id)}" ${it.id===current?"selected":""}>${sprX(it.id+"  "+it.label)}</option>`).join("")}
+    <option value="__new">+ New ${role}\u2026</option></select>`;
+}
+function sprWireItemSelects(root){
+  root.querySelectorAll(".spr-item-select").forEach(sel=>{
+    let last = sel.value;
+    sel.addEventListener("focus", ()=>{ last = sel.value; });
+    sel.addEventListener("change", ()=>{
+      if(sel.value!=="__new"){ last = sel.value; return; }
+      const role = sel.dataset.role;
+      const label = prompt(`Name the new ${role} (short, e.g. ${role==="source"?"Paddock TSF":role==="pathway"?"Seepage to groundwater":role==="receptor"?"Pastoral bores":"Groundwater contamination"}):`);
+      const clean = String(label||"").trim();
+      if(!clean){ sel.value = last; return; }
+      const id = sprFindOrCreate(role, clean);
+      const it = sprItem(role, id);
+      if(![...sel.options].some(o=>o.value===id)){ const opt = document.createElement("option"); opt.value = id; opt.textContent = `${id}  ${it.label}`; sel.insertBefore(opt, sel.querySelector('option[value="__new"]')); }
+      sel.value = id; last = id;
+    });
+  });
+}
+function sprFieldsHtml(r, prefix){
+  const sel = (id, opts, v, blank)=>`<select id="${prefix}-${id}">${blank?`<option value="">${blank}</option>`:""}${opts.map(o=>`<option ${o===v?"selected":""}>${sprX(o)}</option>`).join("")}</select>`;
+  return `<div class="two-col">${SPR_ALL.map(role=>`<div class="field"><label>${SPR_LABEL[role]} <span class="spr-hint">${SPR_DESC[role].toLowerCase()}</span></label>
+      ${sprSelectHtml(role, `${prefix}-${role}`, sprIdOf(r, role))}</div>`).join("")}</div>
+    <div class="two-col">
+      <div class="field"><label>Linkage basis</label>${sel("rel", SPR_REL, r.relationshipStatus||"Derived")}</div>
+      <div class="field"><label>Confidence</label>${sel("conf", SPR_CONF, r.confidence||"Medium")}</div>
+    </div>
+    <div class="two-col">
+      <div class="field"><label>Controls act on</label>${sel("ctrl", SPR_CONTROL, r.controlPoint||"", "Not set")}</div>
+      <div class="field"><label>Review status</label>${sel("review", SPR_REVIEW, r.reviewStatus||"Draft")}</div>
+    </div>
+    <div class="field"><label>Evidence reference</label><input type="text" id="${prefix}-evidence" value="${sprX(r.evidenceReference||"")}" placeholder="e.g. Hydrogeology report (2026) s4.2"></div>`;
+}
+function sprReadFields(r, prefix){
+  let changed = false;
+  if(!r.sprIds) r.sprIds = {};
+  SPR_ALL.forEach(role=>{ const el = document.getElementById(prefix+"-"+role); if(el && el.value && el.value!=="__new" && r.sprIds[role]!==el.value){ r.sprIds[role] = el.value; changed = true; } });
+  const before = r.reviewStatus;
+  [["relationshipStatus","rel"],["confidence","conf"],["controlPoint","ctrl"],["reviewStatus","review"],["evidenceReference","evidence"]].forEach(([k,id])=>{
+    const el = document.getElementById(prefix+"-"+id); if(!el) return;
+    const v = String(el.value||"").trim(); if((r[k]||"")!==v){ r[k] = v; changed = true; }
+  });
+  if(r.reviewStatus==="Approved" && before!=="Approved"){
+    const who = rdReviewer();
+    if(who){ r.sprApprovedBy = who; r.sprApprovedAt = rdStamp(); }
+    else { r.reviewStatus = before; alert("Linkage not approved: your initials are needed for the approval record."); }
+  }
+  if(r.reviewStatus!=="Approved"){ delete r.sprApprovedBy; delete r.sprApprovedAt; }
+  SPR_ALL.forEach(role=>{ const it = sprItem(role, r.sprIds[role]); if(it) r[SPR_FIELD[role]] = it.label; });
+  return changed;
+}
+function sprGroupingDrawerHtml(r){
+  const checks = r.id && RISKS.includes(r) ? sprChecks(r, sprActive()) : [];
+  setTimeout(()=>{ const d = document.getElementById("drawer"); if(d) sprWireItemSelects(d); }, 0);
+  return `<details class="group-box" open><summary>Source\u2013pathway\u2013receptor linkage</summary>
+    <p class="panel-sub">Pick this risk's items from the project's SPR model, or add a new one.</p>
+    ${checks.length?sprChecksHtml(checks):""}${sprFieldsHtml(r, "f-spr")}</details>`;
+}
+function rdReadSprFields(r){
+  sprReadFields(r, "f-spr");
+  const el = document.getElementById("f-risk-review");
+  if(el && el.value && el.value!==r.riskStatus){
+    if(el.value==="Approved"){
+      const who = rdReviewer();
+      if(who) rdApproveRisk(r, who); else alert("Risk not approved: your initials are needed for the approval record.");
+    } else { r.riskStatus = el.value; delete r.riskApprovedBy; delete r.riskApprovedAt; }
+  }
+}
+function renderSprReview(){
+  const el = document.getElementById("pathway-analysis-body");
+  const all = sprActive();
+  let list = sprFilteredList();
+  if(sprQueueStatus!=="all") list = list.filter(r=>r.reviewStatus===sprQueueStatus);
+  const pending = list.filter(r=>r.reviewStatus!=="Approved");
+  if(!list.some(r=>r.id===sprSelectedId)) sprSelectedId = list.length ? list[0].id : null;
+  const sel = RISKS.find(r=>r.id===sprSelectedId);
+  const cellTxt = (r, role)=>`<span class="spr-id">${sprX(sprIdOf(r, role))}</span>${sprX(sprGroupOf(r, role))}`;
+  const rows = list.map(r=>{
+    const n = sprChecks(r, all).length;
+    return `<tr class="spr-row ${r.id===sprSelectedId?"sel":""}" data-rid="${r.id}" tabindex="0">
+      <td><strong>#${r.id}</strong></td><td class="spr-s">${cellTxt(r,"source")}</td><td class="spr-p">${cellTxt(r,"pathway")}</td>
+      <td class="spr-r">${cellTxt(r,"receptor")}</td><td class="spr-i">${cellTxt(r,"impact")}</td>
+      <td class="muted-cell">${sprX(r.relationshipStatus||"")}</td><td>${sprRatingPill(r.resRating)}</td>
+      <td>${n?`<span class="spr-warn">\u26a0 ${n}</span>`:`<span class="spr-okmark">\u2714</span>`}</td><td>${sprBadge(r.reviewStatus)} ${rdAiTag("link", r)}</td></tr>`;
+  }).join("");
+  const detail = sel ? `<div class="spr-detail-top"><h3>Risk #${sel.id}</h3>${sprBadge(sel.reviewStatus)} ${rdAiTag("link", sel)}</div>
+      ${sel.sprOrigin==="AI" && sel.reviewStatus!=="Approved" ? `<div class="rd-ai-note">This linkage was generated by the agent. Check the source, pathway, receptor and impact, then approve it.</div>` : ""}
+      ${sel.reviewStatus==="Approved" && sel.sprApprovedBy ? `<div class="panel-sub" style="margin-bottom:8px;">Approved by ${sprX(sel.sprApprovedBy)} on ${rdFmtDate(sel.sprApprovedAt)}</div>` : ""}
+      <div class="spr-asis" title="As written in the register"><span class="spr-s">${sprX(richHtmlToPlainText(sel.source))}</span> \u2192 <span class="spr-p">${sprX(richHtmlToPlainText(sel.pathway))}</span> \u2192 <span class="spr-r">${sprX(richHtmlToPlainText(sel.receptor))}</span></div>
+      ${sprChecksHtml(sprChecks(sel, all))}
+      ${sprFieldsHtml(sel, "q-spr")}
+      <div class="drawer-actions" style="margin-top:6px;">
+        <button class="btn primary" id="q-save" type="button">Save</button>
+        <button class="btn" id="q-approve" type="button">Save &amp; approve</button>
+        <span class="spacer"></span>
+        <button class="btn" id="q-open" type="button">Open full risk</button>
+      </div>
+      <div class="panel-sub" style="margin-top:8px;">Inherent ${sprRatingPill(sel.inhRating)} \u00b7 Residual ${sprRatingPill(sel.resRating)}</div>`
+    : `<div class="empty-state">Nothing to review with these filters.</div>`;
+  el.innerHTML = sprToolbarHtml("table") + `<div class="filter-row">
+      <select id="q-status" aria-label="Review status">${["all",...SPR_REVIEW].map(s=>`<option value="${s}" ${sprQueueStatus===s?"selected":""}>${s==="all"?"All review states":s}</option>`).join("")}</select>
+      <button class="btn" id="q-approve-all" type="button" ${pending.length?"":"disabled"}>Approve all ${pending.length} shown</button>
+      <span class="panel-sub">One row per risk. Pick its items from the model, fix any \u26a0 checks, add the evidence, then approve.</span>
+    </div>
+    <div class="spr-split">
+      <div class="scroll-x spr-queue"><table><thead><tr><th>Risk</th><th>Source</th><th>Pathway</th><th>Receptor</th><th>Impact</th><th>Basis</th><th>Res.</th><th>Checks</th><th>Review</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="9" class="empty-state">No risks match.</td></tr>`}</tbody></table></div>
+      <div class="spr-detail">${detail}</div>
+    </div>`;
+  wireSprToolbar(()=>renderSprReview());
+  sprWireItemSelects(el);
+  document.getElementById("q-status").addEventListener("change", e=>{ sprQueueStatus = e.target.value; renderSprReview(); });
+  document.getElementById("q-approve-all").addEventListener("click", ()=>{
+    const serious = pending.filter(r=>sprChecks(r, all).some(c=>c.lv==="bad")).length;
+    if(!confirm(`Approve ${pending.length} link${pending.length===1?"":"s"}?${serious?`\n\n${serious} of them still ${serious===1?"has":"have"} a serious SPR issue.`:""} Only approve links you have checked.`)) return;
+    const who = rdReviewer(); if(!who) return;
+    pending.forEach(r=>rdApproveLink(r, who));
+    renderAll();
+  });
+  el.querySelectorAll(".spr-row").forEach(tr=>{
+    const pick = ()=>{ sprSelectedId = Number(tr.dataset.rid); renderSprReview(); };
+    tr.addEventListener("click", pick);
+    tr.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); pick(); } });
+  });
+  if(sel){
+    const save = (approve)=>{
+      const changed = sprReadFields(sel, "q-spr");
+      if(approve && sel.reviewStatus!=="Approved"){ const who = rdReviewer(); if(!who) return; rdApproveLink(sel, who); }
+      if(changed) sel._lastEditedAt = new Date().toISOString();
+      if(approve){
+        const i = list.indexOf(sel);
+        const next = list.slice(i+1).find(r=>r.reviewStatus!=="Approved") || list.find(r=>r!==sel && r.reviewStatus!=="Approved");
+        if(next) sprSelectedId = next.id;
+      }
+      renderAll();
+    };
+    document.getElementById("q-save").addEventListener("click", ()=>save(false));
+    document.getElementById("q-approve").addEventListener("click", ()=>save(true));
+    document.getElementById("q-open").addEventListener("click", ()=>openDrawer(sel.id));
+  }
+}
+
+/* ---- Model editor ---- */
+function renderSprModelEditor(){
+  const el = document.getElementById("pathway-analysis-body");
+  const merges = sprSuggestedMerges();
+  const m = sprModel();
+  const itemRows = role=>sprItems(role).map(it=>{
+    const n = sprUsage(role, it.id);
+    return `<tr><td class="spr-idcell">${sprX(it.id)}</td>
+      <td><input type="text" class="spr-m-label" data-role="${role}" data-id="${sprX(it.id)}" value="${sprX(it.label)}" maxlength="60" aria-label="${SPR_LABEL[role]} ${sprX(it.id)} name"></td>
+      <td><input type="text" class="spr-m-note" data-role="${role}" data-id="${sprX(it.id)}" value="${sprX(it.note||"")}" maxlength="200" placeholder="${SPR_NOTE_HINT[role]}" aria-label="${SPR_LABEL[role]} ${sprX(it.id)} notes"></td>
+      <td class="spr-num">${n}</td>
+      <td class="spr-actions"><select class="spr-m-merge" data-role="${role}" data-id="${sprX(it.id)}" aria-label="Merge ${sprX(it.label)} into"><option value="">Merge into\u2026</option>${sprItems(role).filter(x=>x.id!==it.id).map(x=>`<option value="${sprX(x.id)}">${sprX(x.id+"  "+x.label)}</option>`).join("")}</select>
+        ${n?"":`<button class="btn danger spr-m-del" type="button" data-role="${role}" data-id="${sprX(it.id)}">Delete</button>`}</td></tr>`;
+  }).join("");
+  const lab = (role, id)=>`<select class="spr-ro" data-f="${role}">${role==="pathway"?`<option value="">Any pathway</option>`:""}${sprItems(role).map(it=>`<option value="${sprX(it.id)}" ${it.id===id?"selected":""}>${sprX(it.id+"  "+it.label)}</option>`).join("")}</select>`;
+  el.innerHTML = `<p class="panel-sub" style="margin:0 0 12px;">The project's SPR model. Build a short, specific list here and point each risk at it (Linkages tab). Renaming an item updates every risk that uses it. Merge near-duplicates so each source, pathway and receptor appears once.</p>
+    ${merges.length?`<div class="spr-merge-box"><strong>Possible duplicates (${merges.length})</strong>
+      ${merges.slice(0,10).map((x,i)=>`<div class="spr-merge-row"><span class="spr-${x.role[0]}">${SPR_LABEL[x.role]}</span> Merge <b>${sprX(x.drop.id+" "+x.drop.label)}</b> into <b>${sprX(x.keep.id+" "+x.keep.label)}</b>?
+        <button class="btn" type="button" data-merge="${i}">Merge</button> <button class="btn" type="button" data-keep="${i}">Keep both</button></div>`).join("")}</div>`:""}
+    <div class="spr-model-grid">${SPR_ALL.map(role=>`<div class="spr-card spr-model-card" style="border-top:4px solid ${SPR_COL[role].stroke};">
+      <div class="spr-model-head"><h4 style="color:${SPR_COL[role].stroke};">${SPR_PLURAL[role]} <span class="panel-sub">${SPR_DESC[role].toLowerCase()}</span></h4><button class="btn" type="button" data-add="${role}">+ Add</button></div>
+      <table class="spr-model-table"><thead><tr><th>ID</th><th>Name</th><th>Notes</th><th>Risks</th><th></th></tr></thead><tbody>${itemRows(role) || `<tr><td colspan="5" class="panel-sub">None yet.</td></tr>`}</tbody></table></div>`).join("")}</div>
+    <div class="spr-card" style="margin-top:14px;"><div class="spr-model-head"><h4>Linkages ruled out <span class="panel-sub">source\u2013receptor pairs with no complete pathway, and why</span></h4><button class="btn" type="button" id="spr-ro-add">+ Add</button></div>
+      ${m.ruledOut.length?`<table class="spr-model-table"><thead><tr><th>Source</th><th>Pathway</th><th>Receptor</th><th>Reason</th><th></th></tr></thead><tbody>
+        ${m.ruledOut.map((x,i)=>`<tr data-ro="${i}"><td>${lab("source", x.source)}</td><td>${lab("pathway", x.pathway)}</td><td>${lab("receptor", x.receptor)}</td>
+          <td><input type="text" class="spr-ro" data-f="reason" value="${sprX(x.reason||"")}" placeholder="e.g. TSF lined, groundwater 35 m, no bores within 5 km"></td>
+          <td><button class="btn danger" type="button" data-ro-del="${i}">Remove</button></td></tr>`).join("")}</tbody></table>`
+        : `<div class="panel-sub">None recorded. Good practice is to note source\u2013receptor pairs you considered and ruled out, so reviewers can see the model is complete.</div>`}
+    </div>`;
+  const now = ()=>new Date().toISOString();
+  el.querySelectorAll(".spr-m-label").forEach(inp=>inp.addEventListener("change", ()=>{
+    const role = inp.dataset.role, it = sprItem(role, inp.dataset.id), v = inp.value.trim().slice(0,60);
+    if(!it) return;
+    if(!v){ inp.value = it.label; return; }
+    const clash = sprItems(role).find(x=>x!==it && sprKey(x.label)===sprKey(v));
+    if(clash){
+      if(confirm(`"${v}" is already ${clash.id}. Merge ${it.id} into ${clash.id}?`)){ sprMerge(role, it.id, clash.id); renderAll(); }
+      else inp.value = it.label;
+      return;
+    }
+    it.label = v; sprAllProjectRisks().forEach(r=>{ if(sprIdOf(r, role)===it.id) r._lastEditedAt = now(); });
+    renderAll();
+  }));
+  el.querySelectorAll(".spr-m-note").forEach(inp=>inp.addEventListener("change", ()=>{ const it = sprItem(inp.dataset.role, inp.dataset.id); if(it){ it.note = inp.value.trim().slice(0,200); renderAll(); } }));
+  el.querySelectorAll(".spr-m-merge").forEach(sel=>sel.addEventListener("change", ()=>{
+    if(!sel.value) return;
+    const role = sel.dataset.role, from = sprItem(role, sel.dataset.id), into = sprItem(role, sel.value);
+    if(confirm(`Merge ${from.id} "${from.label}" into ${into.id} "${into.label}"? Every risk using ${from.id} will use ${into.id}.`)){ sprMerge(role, from.id, into.id); renderAll(); }
+    else sel.value = "";
+  }));
+  el.querySelectorAll(".spr-m-del").forEach(b=>b.addEventListener("click", ()=>{ const role = b.dataset.role; sprModel()[SPR_LIST[role]] = sprItems(role).filter(x=>x.id!==b.dataset.id); renderAll(); }));
+  el.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click", ()=>{
+    const role = b.dataset.add;
+    const label = prompt(`Name the new ${role}:`);
+    if(String(label||"").trim()){ sprFindOrCreate(role, label); renderAll(); }
+  }));
+  el.querySelectorAll("[data-merge]").forEach(b=>b.addEventListener("click", ()=>{ const x = merges[Number(b.dataset.merge)]; sprMerge(x.role, x.drop.id, x.keep.id); renderAll(); }));
+  el.querySelectorAll("[data-keep]").forEach(b=>b.addEventListener("click", ()=>{ sprDismissed.add(merges[Number(b.dataset.keep)].pairKey); renderSprModelEditor(); }));
+  document.getElementById("spr-ro-add").addEventListener("click", ()=>{
+    const s = sprItems("source")[0], r = sprItems("receptor")[0];
+    if(!s || !r){ alert("Add a source and a receptor to the model first."); return; }
+    sprModel().ruledOut.push({source:s.id, pathway:"", receptor:r.id, reason:""}); renderAll();
+  });
+  el.querySelectorAll("tr[data-ro]").forEach(tr=>{
+    const row = sprModel().ruledOut[Number(tr.dataset.ro)];
+    tr.querySelectorAll(".spr-ro").forEach(f=>f.addEventListener("change", ()=>{ row[f.dataset.f] = f.value.trim(); scheduleAutosave(); renderHeader(); }));
+  });
+  el.querySelectorAll("[data-ro-del]").forEach(b=>b.addEventListener("click", ()=>{ sprModel().ruledOut.splice(Number(b.dataset.roDel),1); renderAll(); }));
+}
+
+/* ---- Checks ---- */
+function renderSprQuality(){
+  const el = document.getElementById("pathway-analysis-body");
+  const a = sprActive();
+  const n = f=>a.filter(f).length;
+  const checks = new Map(a.map(r=>[r, sprChecks(r, a)]));
+  const count = id=>a.filter(r=>checks.get(r).some(c=>c.id===id)).length;
+  const item = (t, c, cls)=>`<li><span>${sprX(t)}</span><span class="spr-count ${c?cls:"good"}">${c}</span></li>`;
+  const unused = SPR_ALL.reduce((t,role)=>t+sprItems(role).filter(it=>!sprUsage(role, it.id)).length, 0);
+  const noNote = sprItems("receptor").filter(it=>!it.note).length;
+  const merges = sprSuggestedMerges().length;
+  const issues = a.filter(r=>checks.get(r).length || r.reviewStatus!=="Approved");
+  el.innerHTML = `<div class="panel-sub" style="margin-bottom:10px;">Covers all ${a.length} active risks in this assessment. The Guidance tab explains why each check matters.</div>
+    <div class="spr-quality3">
+      <div class="spr-card"><h4>The model</h4><ul class="spr-checks">
+        ${item("Possible duplicate items", merges, "warn")}
+        ${item("Receptors with no sensitivity or distance noted", noNote, "warn")}
+        ${item("Items not used by any risk", unused, "warn")}
+        ${item("Linkages ruled out (recorded)", sprModel().ruledOut.length, "good")}
+      </ul></div>
+      <div class="spr-card"><h4>Linkages</h4><ul class="spr-checks">
+        ${["incomplete","generic","combined","pathway","selfref","impact","duplicate","workers"].map(id=>item(SPR_CHECK_LABEL[id], count(id), id==="incomplete"?"bad":"warn")).join("")}
+      </ul></div>
+      <div class="spr-card"><h4>Evidence and review</h4><ul class="spr-checks">
+        ${item("AI risks awaiting approval", n(rdNeedsApproval), "warn")}
+        ${item("AI linkages awaiting approval", n(sprNeedsApproval), "warn")}
+        ${item("Approved linkages", n(r=>r.reviewStatus==="Approved"), "good")}
+        ${item("Still draft", n(r=>r.reviewStatus==="Draft"), "warn")}
+        ${item("Rework required", n(r=>r.reviewStatus==="Rework required"), "bad")}
+        ${item("Derived or assumed links", n(r=>r.relationshipStatus!=="Explicit"), "warn")}
+        ${item("Low confidence", n(r=>r.confidence==="Low"), "warn")}
+        ${item(SPR_CHECK_LABEL.evidence, count("evidence"), "warn")}
+        ${item(SPR_CHECK_LABEL.assumed, count("assumed"), "bad")}
+        ${item(SPR_CHECK_LABEL.control, count("control"), "warn")}
+      </ul></div>
+    </div>
+    ${merges||noNote?`<p class="panel-sub" style="margin-top:10px;">Fix model issues in the <a href="#" id="spr-go-model">Model tab</a>.</p>`:""}
+    <h4 style="margin:16px 0 8px;">Risks needing attention (${issues.length})</h4>
+    ${issues.length ? `<div class="scroll-x"><table><thead><tr><th>Risk</th><th>Linkage</th><th>Res.</th><th>Review</th><th>Issues</th><th></th></tr></thead><tbody>
+      ${issues.map(r=>`<tr><td>#${r.id}</td><td><span class="spr-s">${sprX(sprGroupOf(r,"source"))}</span> \u2192 <span class="spr-p">${sprX(sprGroupOf(r,"pathway"))}</span> \u2192 <span class="spr-r">${sprX(sprGroupOf(r,"receptor"))}</span></td>
+        <td>${sprRatingPill(r.resRating)}</td><td>${sprBadge(r.reviewStatus)}</td><td class="spr-issues">${checks.get(r).map(c=>`<div class="${c.lv}">${sprX(c.t)}</div>`).join("") || `<div class="warn">Not yet approved.</div>`}</td>
+        <td style="white-space:nowrap;"><button class="btn" data-sprreview="${r.id}" type="button">Review</button> <button class="btn" data-spredit="${r.id}" type="button">Edit</button></td></tr>`).join("")}
+      </tbody></table></div>` : `<div class="empty-state">No open issues.</div>`}`;
+  const go = document.getElementById("spr-go-model");
+  if(go) go.addEventListener("click", e=>{ e.preventDefault(); pathwayTab = "model"; renderPathwayAnalysis(); });
+  wireSprDetail(a, ()=>renderSprQuality());
+}
+
+/* ---- Guidance ---- */
+function renderSprGuide(){
+  document.getElementById("pathway-analysis-body").innerHTML = `<div class="spr-guide">
+    <p class="spr-guide-lead">Build the project's SPR model first: a short list of specific sources, pathways, receptors and impacts. Then each risk is one <strong>linkage</strong> through that model: a source, a pathway that can actually reach the receptor, a receptor that could be harmed, and the adverse effect.</p>
+    <div class="spr-guide-grid">
+      <div class="spr-card"><h4>1. Complete linkages only</h4><p>A risk needs all three links. If the pathway can't reach the receptor, record it under "Linkages ruled out" with the reason, instead of rating it. A pathway can be completed later, for example by new abstraction, groundwater rebound or a change of land use.</p></div>
+      <div class="spr-card"><h4>2. Specific sources</h4><p>Name the activity or emission and where it comes from, not the whole mine. "Paddock TSF" beats "Mining". Consider normal operation, incidents, temporary shutdown, care and maintenance, and closure.</p></div>
+      <div class="spr-card"><h4>3. Real pathways</h4><p>Name the mechanism and medium: seepage to groundwater, stormwater runoff, windblown dust, drawdown, direct clearing, vehicle strike. Base it on the site's topography, hydrogeology, weather and separation distances. A pathway is not the source.</p></div>
+      <div class="spr-card"><h4>4. One receptor per linkage</h4><p>Split combined receptors ("soil and groundwater"). Note what makes the receptor sensitive and where it is, for example "active Malleefowl mound, 800 m from haul road". Include off-site receptors. Workers are covered by WHS.</p></div>
+      <div class="spr-card"><h4>5. State the impact</h4><p>Say what harm happens to that receptor, for example "loss of P3 flora population" or "groundwater no longer fit for stock". The impact drives the consequence rating.</p></div>
+      <div class="spr-card"><h4>6. Evidence and uncertainty</h4><p>A linkage stays potential until data confirms it. Record the evidence, the confidence and whether the link is explicit, derived or assumed. High or Extreme risks resting on assumptions should drive further study.</p></div>
+      <div class="spr-card"><h4>7. Controls break links</h4><p>Good controls remove or contain the source, interrupt the pathway, or protect the receptor. Recording which link the controls act on shows why the residual rating is lower.</p></div>
+      <div class="spr-card"><h4>8. One model, kept tidy</h4><p>Each item should appear once. Merge near-duplicates in the Model tab, keep names short and consistent, and update the model as studies arrive.</p></div>
+    </div>
+    <p class="panel-sub">Based on: DWER Guideline: Risk assessments (2020); NEPM (Assessment of Site Contamination) Schedule B2; DoH WA Assessment and management of contaminated sites; DMPE MDCP guidance and FAQs; UK Environment Agency Land contamination risk management (LCRM). For MDCPs, pathways directly regulated by another agency can be dealt with in the legislative framework section, and noise, dust and light are assessed through their effects on DMPE's environmental factors.</p>
+  </div>`;
+}
+
+/* ---- Help ---- */
+function rdOpenHelp(){
+  document.getElementById("rd-help").innerHTML = `<div class="rd-help">
+    <div class="rd-help-head"><h3>How to use this dashboard</h3><button class="btn" id="rd-help-close" type="button">Close</button></div>
+    <p>This file holds one project's environmental risk assessment. Your data stays in the file on your computer. It needs an internet connection to open.</p>
+    <h4>Risk register tab</h4>
+    <ul>
+      <li><b>Matrix:</b> click a rating card or a matrix cell to filter the register. <b>Inherent / Residual</b> switches which ratings you see.</li>
+      <li><b>Filters:</b> use the factor, phase and domain chips or the search box. The yellow bar shows what's filtered. Click \u2715 to clear.</li>
+      <li><b>Edit a risk:</b> click <b>Edit</b> on its row. Ratings update from the consequence and likelihood. You can also change them in the register dropdowns.</li>
+      <li><b>Add, flag or archive:</b> use <b>+ Add risk</b>, the flag tick box in the editor, or <b>Archive</b>. Archived risks are hidden until you click <b>Show archived</b>.</li>
+    </ul>
+    <h4>SPR model tab</h4>
+    <ul>
+      <li><b>Figure:</b> each box is one item in the project's source\u2013pathway\u2013receptor model. Lines are risks, coloured by their highest rating and dashed where the link is derived or assumed. Hover to trace links, click to list risks. Download as <b>PNG</b> or <b>SVG</b>.</li>
+      <li><b>Matrix:</b> sources down the side, receptors across the top, pathways in the cells.</li>
+      <li><b>Linkages:</b> one row per risk. Pick its source, pathway, receptor and impact, add the evidence, then approve.</li>
+      <li><b>Model:</b> rename, merge or add items, note receptor sensitivity and distance, and record linkages you've ruled out.</li>
+      <li><b>Checks:</b> SPR problems to fix. <b>Guidance</b> explains good practice.</li>
+    </ul>
+    <h4>Reviewing AI content</h4>
+    <ul>
+      <li>Risks and SPR linkages written by the agent are tagged <span class="rd-ai">AI \u00b7 review</span> until a person approves them.</li>
+      <li><b>Risks:</b> click <b>Edit</b>, check it, set <b>Risk review</b> to Approved and save. Or filter with <b>Needs approval</b> and use <b>Approve shown</b> once you've checked them all.</li>
+      <li><b>Linkages:</b> SPR model tab, <b>Linkages</b>, then <b>Save &amp; approve</b>.</li>
+      <li>Approvals record your initials and the date. They're included in the exports.</li>
+    </ul>
+    <h4>Saving and sharing</h4>
+    <ul>
+      <li>Click <b>Save copy</b> to download an updated .html file. Move it to your project folder and share that file. Changes are not saved into the file you opened.</li>
+      <li>If you close without saving, your browser keeps a backup and offers to restore it next time you open the same file.</li>
+      <li>Files on SharePoint or Teams: download them first, then open.</li>
+    </ul>
+    <h4>More from the agent</h4>
+    <ul><li>Click <b>Paste from agent</b>, paste the agent's code block, then choose <b>Add to what's open</b> for extra risks or <b>Replace what's open</b> for a new version.</li></ul>
+    <h4>Exports</h4>
+    <ul>
+      <li><b>Export \u25be</b> gives the register as Excel (this register or all of them) or as a PNG image, plus the MDCP template (MDCP) or CSM spreadsheet (DWER). Exports only include active risks, in order, with no blank rows.</li>
+      <li>The SPR tab exports the figure (PNG, SVG) and the model and linkages (Excel).</li>
+    </ul>
+    <h4>More than one framework</h4>
+    <ul><li>Use <b>\u21c4 Transfer risks to another framework</b> to copy risks into, for example, a DWER assessment. They stay linked and are marked for review.</li></ul>
+  </div>`;
+  document.getElementById("rd-help-overlay").classList.add("show");
+  document.getElementById("rd-help-close").addEventListener("click", rdCloseHelp);
+  document.getElementById("rd-help-close").focus();
+}
+function rdCloseHelp(){ document.getElementById("rd-help-overlay").classList.remove("show"); }
+document.getElementById("rd-help-btn").addEventListener("click", rdOpenHelp);
+document.getElementById("rd-help-overlay").addEventListener("click", e=>{ if(e.target.id==="rd-help-overlay") rdCloseHelp(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape" && document.getElementById("rd-help-overlay").classList.contains("show")) rdCloseHelp(); });
+
+const __rdRenderAllSpr = renderAll;
+renderAll = function(){ rdEnsureSpr(); __rdRenderAllSpr.apply(this, arguments); };
+
+/* =========================================================================
+   AI REVIEW IN THE REGISTER
+   Risks written by the agent carry origin "AI" and stay "Needs review" until
+   a person approves them. Approvals record initials and date.
+   ========================================================================= */
+const __rdFlagCell = flagCellHtml;
+flagCellHtml = function(r){
+  const base = __rdFlagCell.apply(this, arguments);
+  const tag = rdAiTag("risk", r);
+  return tag ? base.replace('<td class="badge-cell">', '<td class="badge-cell">' + tag + " ") : base;
+};
+const __rdPassesBase = passesBase;
+passesBase = function(r){
+  if(!__rdPassesBase.apply(this, arguments)) return false;
+  if(rdShowNeedsApproval && !rdNeedsApproval(r)) return false;
+  return true;
+};
+const __rdRenderRegister = renderRegister;
+renderRegister = function(){
+  __rdRenderRegister.apply(this, arguments);
+  const n = RISKS.filter(r=>!r._archived && rdNeedsApproval(r)).length;
+  const chip = document.getElementById("rd-approval-chip");
+  const btn = document.getElementById("rd-approve-shown");
+  if(chip){ chip.textContent = `\ud83e\udd16 Needs approval (${n})`; chip.classList.toggle("hidden", !n && !rdShowNeedsApproval); chip.classList.toggle("active", rdShowNeedsApproval); }
+  if(btn){ const shown = visibleRisks().filter(rdNeedsApproval).length; btn.textContent = `Approve ${shown} shown\u2026`; btn.classList.toggle("hidden", !(rdShowNeedsApproval && shown)); }
+};
+document.getElementById("rd-approval-chip").addEventListener("click", ()=>{ rdShowNeedsApproval = !rdShowNeedsApproval; renderAll(); });
+document.getElementById("rd-approve-shown").addEventListener("click", ()=>{
+  const list = visibleRisks().filter(rdNeedsApproval);
+  if(!list.length) return;
+  if(!confirm(`Approve ${list.length} AI-generated risk${list.length===1?"":"s"}?\n\nOnly do this once you've checked each one: the wording, classification, ratings and controls.`)) return;
+  const who = rdReviewer(); if(!who) return;
+  list.forEach(r=>rdApproveRisk(r, who));
+  renderAll();
+});
+// Review box at the top of the risk editor for AI-generated risks
+const __rdOpenDrawer = openDrawer;
+openDrawer = function(id){
+  __rdOpenDrawer.apply(this, arguments);
+  const r = id==null ? null : RISKS.find(x=>x.id===id);
+  if(!r || r.origin!=="AI") return;
+  const box = document.createElement("div");
+  box.className = "rd-review-box" + (r.riskStatus==="Approved" ? " ok" : r.riskStatus==="Rework required" ? " bad" : "");
+  box.innerHTML = `<div><strong>\ud83e\udd16 AI-generated risk</strong> ${rdAiTag("risk", r)}</div>
+    <div class="panel-sub">${r.riskStatus==="Approved" ? `Approved by ${sprX(r.riskApprovedBy||"")} on ${rdFmtDate(r.riskApprovedAt)}.` : "Check the wording, classification, ratings and controls, then approve it."}</div>
+    <div class="field" style="margin:8px 0 0;"><label for="f-risk-review">Risk review</label>
+      <select id="f-risk-review">${RISK_REVIEW.map(s=>`<option ${s===r.riskStatus?"selected":""}>${s}</option>`).join("")}</select></div>`;
+  const sub = document.querySelector("#drawer .panel-sub");
+  if(sub) sub.after(box); else document.getElementById("drawer").prepend(box);
+};
+
+/* =========================================================================
+   CLEAN EXPORTS
+   Exports hold active risks only, sorted by ID, one row each, with no blank
+   rows. Excel columns are sized and rows are heighted to fit wrapped text.
+   ========================================================================= */
+function rdIsEmptyRisk(r){
+  const t = k=>richHtmlToPlainText(r[k]||"").trim();
+  return !t("source") && !t("pathway") && !t("receptor") && !t("treatment") && !r.inhCons && !r.inhLike && !r.resCons && !r.resLike;
+}
+function rdExportRisks(list){ return (list || RISKS).filter(r=>!r._archived && !rdIsEmptyRisk(r)).sort((a,b)=>a.id-b.id); }
+function sheetXml(rows, styleFor, colCount){
+  const text = v=> v==null ? "" : String(v);
+  const widths = [];
+  for(let c=0; c<colCount; c++){
+    let w = 6;
+    rows.forEach((row, ri)=>{ text(row[c]).split("\n").forEach(line=>{ w = Math.max(w, Math.min(line.length, ri===0 ? 24 : 60)); }); });
+    widths.push(Math.max(8, Math.min(w + 2, 48)));
+  }
+  let out = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+    + '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
+    + '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>'
+    + '<sheetFormatPr defaultRowHeight="15"/><cols>'
+    + widths.map((w,i)=>`<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("") + '</cols><sheetData>';
+  rows.forEach((row, r)=>{
+    let lines = 1;
+    row.forEach((cell, c)=>{
+      const per = Math.max(1, widths[c] - 1);
+      const n = text(cell).split("\n").reduce((s, line)=>s + Math.max(1, Math.ceil(line.length / per)), 0);
+      lines = Math.max(lines, n);
+    });
+    const ht = Math.min(409, Math.max(r===0 ? 30 : 15, lines*15 + 2));
+    out += `<row r="${r+1}" ht="${ht}" customHeight="1">`;
+    row.forEach((cell, c)=>{
+      if(cell===null || cell===undefined || cell==="") return;
+      const ref = colLetter(c+1)+(r+1); const sid = styleFor ? styleFor(r,c) : 0; const sAttr = sid ? ` s="${sid}"` : "";
+      if(typeof cell === "number") out += `<c r="${ref}"${sAttr}><v>${cell}</v></c>`;
+      else out += `<c r="${ref}"${sAttr} t="inlineStr"><is><t xml:space="preserve">${escXml(cell)}</t></is></c>`;
+    });
+    out += '</row>';
+  });
+  out += `</sheetData><autoFilter ref="A1:${colLetter(colCount)}${Math.max(1, rows.length)}"/></worksheet>`;
+  return out;
+}
+function rdFlatSheet(fw, risks, name){
+  const tl = taxLabels(fw);
+  const taxHeaders = fw.taxonomyType==="factor-indicator" ? [tl.top, tl.sub, ...(fw.domainsEnabled?["Domains"]:[])] : [tl.top];
+  const phaseHeader = fw.phasesEnabled ? [phaseLabelOf(fw)] : [];
+  const extra = extraColumns(fw);
+  const commentsHeader = fw.showComments !== false ? ["Comments"] : [];
+  const headers = ["ID", "Flagged", ...taxHeaders, "Source","Pathway","Receptor", ...phaseHeader, "Inh. Consequence","Inh. Likelihood","Inh. Rating",
+    "Treatment / Controls","Res. Consequence","Res. Likelihood","Res. Rating", ...commentsHeader, ...extra.map(c=>c.label),
+    "SPR source","SPR pathway","SPR receptor","SPR impact","Linkage basis","Confidence","Controls act on","Evidence reference",
+    "Origin","Risk review","Risk approved by","Risk approved on","Linkage review","Linkage approved by","Last edited"];
+  const rows = [headers];
+  rdExportRisks(risks).forEach(r=>{
+    const taxVals = fw.taxonomyType==="factor-indicator" ? [r.factor||"", r.indicator||"", ...(fw.domainsEnabled?[(r.domains||[]).join(", ")]:[])] : [r.receptorCategory||""];
+    const phaseVals = fw.phasesEnabled ? [(r.phases||[]).join(", ")] : [];
+    const extraVals = extra.map(c=> c.kind==="outcomes" ? c.full(r) : c.plain(r));
+    const commentsVal = fw.showComments !== false ? [r.comments||""] : [];
+    const aiRisk = r.origin==="AI";
+    rows.push([r.id, r._flagged ? "Yes" : "", ...taxVals, richHtmlToPlainText(r.source), richHtmlToPlainText(r.pathway), richHtmlToPlainText(r.receptor), ...phaseVals,
+      r.inhCons||"", r.inhLike||"", r.inhRating||"", richHtmlToPlainText(r.treatment), r.resCons||"", r.resLike||"", r.resRating||"", ...commentsVal, ...extraVals,
+      sprGroupOf(r,"source"), sprGroupOf(r,"pathway"), sprGroupOf(r,"receptor"), sprGroupOf(r,"impact"), r.relationshipStatus||"", r.confidence||"", r.controlPoint||"", r.evidenceReference||"",
+      r.origin||"", aiRisk ? (r.riskStatus||"Needs review") : "", r.riskStatus==="Approved" ? (r.riskApprovedBy||"") : "", r.riskStatus==="Approved" ? rdFmtDate(r.riskApprovedAt) : "",
+      r.reviewStatus||"", r.reviewStatus==="Approved" ? (r.sprApprovedBy||"") : "", formatTimestamp(r._lastEditedAt)]);
+  });
+  const inhC = headers.indexOf("Inh. Rating"), resC = headers.indexOf("Res. Rating");
+  const styleFor = (ri,c)=>{ if(ri===0) return 1; if(c===inhC) return ratingStyleId(rows[ri][inhC]); if(c===resC) return ratingStyleId(rows[ri][resC]); return 0; };
+  return {name, rows, styleFor, colCount: headers.length};
+}
+function rdSheetName(s, used){
+  let n = String(s).replace(/[\\\/\?\*\[\]:]/g, " ").slice(0, 31).trim() || "Register";
+  let k = 2; const base = n;
+  while(used.has(n)){ n = (base.slice(0, 28) + " " + k++).trim(); }
+  used.add(n); return n;
+}
+function rdExportRegisters(all){
+  stashActive();
+  const keys = all ? Object.keys(ASSESSMENTS).filter(k=>rdExportRisks(ASSESSMENTS[k].risks).length) : [activeFramework.id];
+  const used = new Set();
+  const sheets = keys.map(k=>{ const fw = frameworkFor(k); return rdFlatSheet(fw, k===activeFramework.id ? RISKS : ASSESSMENTS[k].risks, rdSheetName(shortFwName(fw) + " register", used)); });
+  if(!sheets.length || sheets.every(s=>s.rows.length < 2)){ alert("There are no active risks to export."); return; }
+  const base = (project.name || "risk_register").replace(/[^a-z0-9]+/gi, "_");
+  downloadWorkbook(buildWorkbook(sheets), all ? `${base}_all_registers.xlsx` : `${base}_${shortFwName(activeFramework).replace(/[^a-z0-9]+/gi,"_")}_register.xlsx`);
+}
+document.getElementById("export-flat-btn").addEventListener("click", ()=>rdExportRegisters(false));
+document.getElementById("rd-export-all-btn").addEventListener("click", ()=>rdExportRegisters(true));
+
+/* ---- Register as a PNG image (drawn on a canvas, wrapped to fit) ---- */
+function rdExportRegisterPng(){
+  const fw = activeFramework, tl = taxLabels(fw);
+  const list = rdExportRisks(visibleRisks());
+  if(!list.length){ alert("There are no active risks to export with the current filters."); return; }
+  const plain = v=>richHtmlToPlainText(v||"").trim();
+  const cols = [
+    {h:"ID", w:62, v:r=>String(r.id) + (r._flagged ? "\nFlagged" : "")},
+    {h: fw.taxonomyType==="factor-indicator" ? `${tl.top} / ${tl.sub}` : tl.top, w:150, v:r=> fw.taxonomyType==="factor-indicator" ? [r.factor, r.indicator].filter(Boolean).join(" \u203a ") : (r.receptorCategory||"")},
+    {h:"Source", w:175, v:r=>plain(r.source)},
+    {h:"Pathway", w:175, v:r=>plain(r.pathway)},
+    {h:"Receptor", w:175, v:r=>plain(r.receptor)},
+    ...(fw.phasesEnabled ? [{h:phaseLabelOf(fw), w:124, v:r=>(r.phases||[]).join(", ")}] : []),
+    {h:"Inherent", w:118, rating:"inh"},
+    {h:"Treatment / controls", w:262, v:r=>plain(r.treatment)},
+    {h:"Residual", w:118, rating:"res"},
+    {h:"Review", w:140, review:true}
+  ];
+  const PAD = 24, LH = 15, CELLPAD = 8, TITLE_H = 74, HEAD_H = 34;
+  const W = PAD*2 + cols.reduce((s,c)=>s+c.w, 0);
+  const font = "12px Figtree, 'Segoe UI', Arial, sans-serif";
+  const probe = document.createElement("canvas").getContext("2d");
+  probe.font = font;
+  const wrap = (txt, maxW)=>{
+    const out = [];
+    String(txt||"").split("\n").forEach(par=>{
+      let line = "";
+      par.split(/\s+/).filter(Boolean).forEach(word=>{
+        const test = line ? line + " " + word : word;
+        if(probe.measureText(test).width <= maxW){ line = test; return; }
+        if(line) out.push(line);
+        let w = word;
+        while(probe.measureText(w).width > maxW && w.length > 1){ let k = w.length; while(k > 1 && probe.measureText(w.slice(0,k)).width > maxW) k--; out.push(w.slice(0,k)); w = w.slice(k); }
+        line = w;
+      });
+      out.push(line);
+    });
+    while(out.length && !out[out.length-1]) out.pop();
+    return out.length ? out : [""];
+  };
+  const cells = list.map(r=>cols.map(c=>{
+    if(c.rating){ const p = c.rating; return {rating: r[p+"Rating"]||"", lines: wrap([r[p+"Cons"], r[p+"Like"]].filter(Boolean).join(" \u00b7 "), c.w - CELLPAD*2)}; }
+    if(c.review){
+      if(r.origin!=="AI") return {lines:["Consultant"]};
+      if(r.riskStatus==="Approved") return {tag:"ok", lines:["AI \u2713 approved", [r.riskApprovedBy, rdFmtDate(r.riskApprovedAt)].filter(Boolean).join(", ")].filter(Boolean)};
+      return {tag: r.riskStatus==="Rework required" ? "bad" : "ai", lines:[r.riskStatus==="Rework required" ? "AI \u00b7 rework" : "AI \u00b7 needs review"]};
+    }
+    return {lines: wrap(c.v(r), c.w - CELLPAD*2)};
+  }));
+  const rowH = cells.map(row=>Math.max(...row.map(cell=>cell.lines.length*LH + (cell.rating ? 26 : 0) + (cell.tag ? 8 : 0))) + CELLPAD*2);
+  const H = TITLE_H + HEAD_H + rowH.reduce((s,h)=>s+h, 0) + 44;
+  const scale = Math.max(1, Math.min(2, Math.floor(30000 / H) || 1));
+  const cv = document.createElement("canvas");
+  cv.width = W*scale; cv.height = H*scale;
+  const ctx = cv.getContext("2d");
+  ctx.scale(scale, scale);
+  const rr = (x, y, w, h, r)=>{ ctx.beginPath(); ctx.moveTo(x+r, y); ctx.arcTo(x+w, y, x+w, y+h, r); ctx.arcTo(x+w, y+h, x, y+h, r); ctx.arcTo(x, y+h, x, y, r); ctx.arcTo(x, y, x+w, y, r); ctx.closePath(); };
+  ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, W, H);
+  ctx.textBaseline = "alphabetic";
+  ctx.fillStyle = "#1E1E1E"; ctx.font = "bold 19px Figtree, 'Segoe UI', Arial, sans-serif";
+  ctx.fillText(`${project.name || "Untitled project"}: risk register`, PAD, 34);
+  ctx.fillStyle = "#565D4F"; ctx.font = "12.5px Figtree, 'Segoe UI', Arial, sans-serif";
+  const aiOpen = list.filter(rdNeedsApproval).length;
+  const filtered = visibleRisks().length !== rdExportRisks(RISKS).length;
+  ctx.fillText([fw.name, `${list.length} risk${list.length===1?"":"s"}${filtered?" (filtered)":""}`, aiOpen ? `${aiOpen} AI-generated risk${aiOpen===1?"":"s"} awaiting approval` : "", rdFmtDate(new Date().toISOString())].filter(Boolean).join("   \u00b7   "), PAD, 56);
+  let x = PAD, y = TITLE_H;
+  ctx.fillStyle = "#3C533C"; ctx.fillRect(PAD, y, W - PAD*2, HEAD_H);
+  ctx.fillStyle = "#FFFFFF"; ctx.font = "bold 12px Figtree, 'Segoe UI', Arial, sans-serif";
+  cols.forEach(c=>{ ctx.fillText(c.h, x + CELLPAD, y + 21); x += c.w; });
+  y += HEAD_H;
+  const accent = {2:"#3C6E8F", 3:"#4F7942", 4:"#A73434"};
+  list.forEach((r, ri)=>{
+    const h = rowH[ri];
+    ctx.fillStyle = ri % 2 ? "#F8F8F4" : "#FFFFFF"; ctx.fillRect(PAD, y, W - PAD*2, h);
+    x = PAD;
+    cols.forEach((c, ci)=>{
+      const cell = cells[ri][ci];
+      if(accent[ci]){ ctx.fillStyle = accent[ci]; ctx.fillRect(x, y + 4, 3, h - 8); }
+      let ty = y + CELLPAD + 11;
+      if(cell.rating){
+        ctx.fillStyle = "#565D4F"; ctx.font = font;
+        cell.lines.forEach(l=>{ ctx.fillText(l, x + CELLPAD, ty); ty += LH; });
+        if(cell.rating){
+          ctx.font = "bold 11.5px Figtree, 'Segoe UI', Arial, sans-serif";
+          const tw = ctx.measureText(cell.rating).width + 18;
+          ctx.fillStyle = SPR_RCOL[cell.rating] || "#8A8A80"; rr(x + CELLPAD, ty - 6, tw, 20, 10); ctx.fill();
+          ctx.fillStyle = "#FFFFFF"; ctx.fillText(cell.rating, x + CELLPAD + 9, ty + 8);
+        }
+      } else if(cell.tag){
+        const col = cell.tag==="ok" ? ["#E4EDE0","#3F6B3F"] : cell.tag==="bad" ? ["#F2D4D2","#A73434"] : ["#F6E9C9","#8A6A18"];
+        ctx.font = "bold 11.5px Figtree, 'Segoe UI', Arial, sans-serif";
+        const tw = Math.min(c.w - CELLPAD*2, ctx.measureText(cell.lines[0]).width + 16);
+        ctx.fillStyle = col[0]; rr(x + CELLPAD, ty - 13, tw, 20, 10); ctx.fill();
+        ctx.fillStyle = col[1]; ctx.fillText(cell.lines[0], x + CELLPAD + 8, ty + 1);
+        ctx.font = font; ctx.fillStyle = "#565D4F";
+        cell.lines.slice(1).forEach((l,i)=>ctx.fillText(l, x + CELLPAD, ty + 22 + i*LH));
+      } else {
+        ctx.fillStyle = ci===0 ? "#1E1E1E" : "#1E1E1E";
+        cell.lines.forEach((l, li)=>{
+          ctx.font = (ci===0 && li===0) ? "bold 12px Figtree, 'Segoe UI', Arial, sans-serif" : (ci===0 ? "11px Figtree, 'Segoe UI', Arial, sans-serif" : font);
+          ctx.fillStyle = (ci===0 && li>0) ? "#8A6A18" : "#1E1E1E";
+          ctx.fillText(l, x + CELLPAD, ty); ty += LH;
+        });
+      }
+      x += c.w;
+    });
+    ctx.strokeStyle = "#DCDACD"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(PAD, y + h - .5); ctx.lineTo(W - PAD, y + h - .5); ctx.stroke();
+    y += h;
+  });
+  ctx.fillStyle = "#6B6F63"; ctx.font = "11px Figtree, 'Segoe UI', Arial, sans-serif";
+  ctx.fillText(`Ratings from the ${fw.name} matrix. "AI" marks content generated by the Risk Assessment agent.`, PAD, y + 26);
+  cv.toBlob(b=>{
+    if(!b){ alert("PNG export failed. The register may be too long; try filtering it first."); return; }
+    sprDownload(b, `${(project.name||"risk_register").replace(/[^a-z0-9]+/gi,"_")}_${shortFwName(fw).replace(/[^a-z0-9]+/gi,"_")}_register.png`);
+  }, "image/png");
+}
+document.getElementById("rd-export-png-btn").addEventListener("click", ()=>{
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(rdExportRegisterPng); else rdExportRegisterPng();
+});
 
 /* =========================================================================
    INIT
